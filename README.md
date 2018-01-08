@@ -6,12 +6,12 @@ A very simple, but awesome textarea component that allows you to "@mention" some
 
 ## Installation
 
-`npn install react-mentions-plugin --save`
+`npn install react-mention-plugin --save`
 
 ## Usage
 
 ```
-import TextArea from 'react-mentions-plugin';
+import TextArea from 'react-mention-plugin';
 
 class App extends Component {
   render() {
