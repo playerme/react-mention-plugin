@@ -1,7 +1,9 @@
 {
-  "name": "player-mentions",
+  "name": "react-mentions-plugin",
   "version": "0.1.0",
-  "private": true,
+  "description": "A textarea with mentions and hashtags highlighting.",
+  "private": false,
+  "main": "./src/mentions/index.js",
   "dependencies": {
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
