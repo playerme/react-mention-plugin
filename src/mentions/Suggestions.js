@@ -25,7 +25,7 @@ export default class Suggestions extends PureComponent {
       display: this.props.isOpen ? 'block' : 'none',
       position: 'absolute',
       top: `${this.props.coords.top + 25}px`,
-      left: `${this.props.coords.left}px`,
+      left: `${this.props.coords.left - 25}px`,
     };
   }
 

@@ -104,7 +104,7 @@ class TextInput extends Component {
   static defaultProps = {
     onChange: PropTypes.func,
     onUpdateCoords: PropTypes.func,
-    onMentionMatched: PropTypes.func,
+    onMention: PropTypes.func,
     onScroll: PropTypes.func,
     onKeyUp: PropTypes.func,
     value: PropTypes.func,
@@ -116,7 +116,7 @@ class TextInput extends Component {
   static defaultProps = {
     onChange: () => {},
     onUpdateCoords: () => {},
-    onMentionMatched: () => {},
+    onMention: () => {},
     onScroll: () => {},
     onKeyUp: () => {},
     value: () => {},
@@ -224,7 +224,9 @@ class TextInput extends Component {
     const isMatched = this.isMatched(mentioned);
 
     if (mentioned && mentioned.length > 3 && isMatched) {
-      this.props.onMentionMatched(mentioned);
+      this.props.onMention(mentioned);
+    } else {
+      this.props.onMention(false);
     }
 
     this.onUpdateCoords();
@@ -300,11 +302,11 @@ export default class TextArea extends Component {
         break;
       }
       case KEYS.UP: {
-        this.state.isMentionOpen && this.setActiveSuggestion(KEYS.UP);
+        this.state.isMentionOpen && this.updateActiveSuggestion(KEYS.UP);
         break;
       }
       case KEYS.DOWN: {
-        this.state.isMentionOpen && this.setActiveSuggestion(KEYS.DOWN);
+        this.state.isMentionOpen && this.updateActiveSuggestion(KEYS.DOWN);
         break;
       }
       case KEYS.LEFT: {
@@ -348,9 +350,72 @@ export default class TextArea extends Component {
   /**
    * @param {String} mention
    */
-  onMentionMatched = mention => {
-    // TODO: Handle on mention statement.
+  onMention = mention => {
+    if (!mention) {
+      this.onMentionClose();
+    } else {
+      this.onMentionOpen();
+    }
   };
+
+  /**
+   * @returns {void}
+   */
+  onMentionOpen = () => {
+    this.setState({
+      activeSuggestion: 0,
+      isMentionOpen: true,
+    });
+  };
+
+  /**
+   * @returns {void}
+   */
+  onMentionClose = () => {
+    this.setState({
+      isMentionOpen: false,
+      coords: {
+        top: 0,
+        left: 0,
+      },
+    });
+  };
+
+  /**
+   * Handles changing of active mention suggestion.
+   * If the next active go over the length of the
+   * suggestions, Well back to zero. Lesser than zero
+   * well go to the last item.
+   *
+   * @param {String} dir
+   *
+   * @returns {void}
+   */
+  updateActiveSuggestion(dir) {
+    const nextActive =
+      dir === KEYS.UP
+        ? this.state.activeSuggestion - 1
+        : this.state.activeSuggestion + 1;
+
+    if (
+      nextActive > this.props.suggestions.length - 1 ||
+      this.props.suggestions.length === 1
+    ) {
+      return this.setState({
+        activeSuggestion: 0,
+      });
+    }
+
+    if (nextActive < 0) {
+      return this.setState({
+        activeSuggestion: this.props.suggestions.length - 1,
+      });
+    }
+
+    this.setState({
+      activeSuggestion: nextActive,
+    });
+  }
 
   render() {
     return (
@@ -363,7 +428,7 @@ export default class TextArea extends Component {
         </Backdrop>
 
         <TextInput
-          onMentionMatched={this.onMentionMatched}
+          onMention={this.onMention}
           onChange={this.onChange}
           onKeyUp={this.onKeyUp}
           onScroll={this.onScroll}
@@ -372,6 +437,7 @@ export default class TextArea extends Component {
         />
 
         <Suggestions
+          active={this.state.activeSuggestion}
           isOpen={this.state.isMentionOpen}
           coords={this.state.coords}
           options={this.props.suggestions}
