@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-// import debounce from 'lodash/debounce';
-// import Suggestions from './Suggestions';
+import PropTypes from 'prop-types';
+import Suggestions from './Suggestions';
 import getCoordinates from './getCoordinates';
 
 import './TextArea.css';
@@ -17,7 +17,21 @@ const KEYS = {
 
 class Highlighter extends Component {
   /**
-   * @param {Array|Object|null} value
+   * @property {Object} propTypes
+   */
+  static defaultProps = {
+    value: [],
+  };
+
+  /**
+   * @property {Object} propTypes
+   */
+  static propTypes = {
+    value: PropTypes.string.isRequired,
+  };
+
+  /**
+   * @param {Array|null} value
    */
   getHtmlValue(value) {
     return value
@@ -54,6 +68,15 @@ class Highlighter extends Component {
 
 class Backdrop extends Component {
   /**
+   * @property {Object} propTypes
+   */
+  static propTypes = {
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]).isRequired,
+  };
+  /**
    * @param {Number} props.scrollTop
    * @param {Number} props.scrollLeft
    */
@@ -74,87 +97,29 @@ class Backdrop extends Component {
   }
 }
 
-export default class TextArea extends Component {
+class TextInput extends Component {
   /**
-   * @property {Object|null}
+   * @property {Object} propTypes
    */
-  backdrop = null;
-
-  /**
-   * @property {Object|null}
-   */
-  textarea = null;
+  static defaultProps = {
+    onChange: PropTypes.func,
+    onUpdateCoords: PropTypes.func,
+    onMentionMatched: PropTypes.func,
+    onScroll: PropTypes.func,
+    onKeyUp: PropTypes.func,
+    value: PropTypes.func,
+  };
 
   /**
    * @property {Object} defaultProps
    */
   static defaultProps = {
-    onReturn: () => {},
-    onBlur: () => {},
-    onFocus: () => {},
     onChange: () => {},
-    suggestions: [
-      {
-        id: 1,
-        avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
-        name: 'Fred Smith',
-      },
-      {
-        id: 2,
-        avatar: 'https://randomuser.me/api/portraits/men/59.jpg',
-        name: 'Ronald Horn',
-      },
-      {
-        id: 3,
-        avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
-        name: 'Joseph Jones',
-      },
-      {
-        id: 4,
-        avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
-        name: 'Kumar Patel',
-      },
-    ],
-  };
-
-  /**
-   * @property {Object} state
-   */
-  state = {
-    activeSuggestion: 0,
-    value: '',
-    valueHtml: [],
-    isMentionOpen: false,
-    coords: {
-      top: 0,
-      left: 0,
-    },
-    mentions: [],
-  };
-
-  componentWillUnmount() {
-    this.cleanUpData();
-  }
-
-  /**
-   * Use to clean up all the data bindings and elements created.
-   *
-   * @returns {void}
-   */
-  cleanUpData() {
-    this.backdrop = null;
-    this.textarea = null;
-  }
-
-  /**
-   * @param {Object} event
-   *
-   * @returns {void}
-   */
-  onChange = event => {
-    this.setState({
-      value: event.target.value,
-    });
+    onUpdateCoords: () => {},
+    onMentionMatched: () => {},
+    onScroll: () => {},
+    onKeyUp: () => {},
+    value: () => {},
   };
 
   /**
@@ -173,22 +138,22 @@ export default class TextArea extends Component {
    *
    * @param {Object} textarea
    */
-  getLastWord(textarea) {
-    const lastWord = this.getCurrentText(
+  getLastMentioned(textarea) {
+    const mentioned = this.getCurrentText(
       textarea.value,
       this.getCaretPosition(textarea)
     );
 
-    if (!lastWord) return '';
+    if (!mentioned) return '';
 
     if (
-      (lastWord && lastWord[lastWord.length - 1] === '\n') ||
-      lastWord[lastWord.length - 1] === '\r' ||
-      lastWord[lastWord.length - 1] === ''
+      (mentioned && mentioned[mentioned.length - 1] === '\n') ||
+      mentioned[mentioned.length - 1] === '\r' ||
+      mentioned[mentioned.length - 1] === ''
     ) {
       return '';
     } else {
-      return lastWord;
+      return mentioned;
     }
   }
 
@@ -243,51 +208,91 @@ export default class TextArea extends Component {
       nextTop = top - (this.textarea.scrollHeight - this.textarea.clientHeight);
     }
 
-    this.setState({
-      coords: {
-        left,
-        top: nextTop,
-      },
+    this.props.onUpdateCoords({
+      left,
+      top: nextTop,
     });
   }
 
   /**
-   * @return {void}
+   * @param {Object} event
    */
-  onMentionClose() {
-    this.setState({
-      activeSuggestion: 0,
-      coords: { top: 0, left: 0 },
-      isMentionOpen: false,
-    });
-  }
+  onChange = event => {
+    this.props.onChange(event.target.value);
+
+    const mentioned = this.getLastMentioned(event.target);
+    const isMatched = this.isMatched(mentioned);
+
+    if (mentioned && mentioned.length > 3 && isMatched) {
+      this.props.onMentionMatched(mentioned);
+    }
+
+    this.onUpdateCoords();
+  };
 
   /**
-   * @return {void}
+   * @param {Object} event
    */
-  onMentionOpen() {
-    this.setState(
-      {
-        activeSuggestion: 0,
-        isMentionOpen: true,
-      },
-      () => {
-        this.onUpdateCoords();
-      }
+  onScroll = event => {
+    this.props.onScroll({
+      scrollLeft: event.target.scrollLeft,
+      scrollTop: event.target.scrollTop,
+    });
+  };
+
+  render() {
+    return (
+      <textarea
+        className="Mention-textarea"
+        autoFocus={true}
+        ref={textarea => (this.textarea = textarea)}
+        onChange={this.onChange}
+        onScroll={this.onScroll}
+        onKeyUp={this.props.onKeyUp}
+        value={this.props.value}
+        spellCheck={false}
+      />
     );
   }
+}
+
+export default class TextArea extends Component {
+  static propTypes = {
+    suggestions: PropTypes.array,
+  };
 
   /**
-   * @return {void}
+   * @property {Object} defaultProps
    */
-  onSearchRequest(keyword) {
-    console.log('Search request should perform here using', keyword);
-  }
+  static defaultProps = {
+    suggestions: [],
+  };
 
+  /**
+   * @property {Object} state
+   */
+  state = {
+    activeSuggestion: 0,
+    value: '',
+    isMentionOpen: false,
+    coords: {
+      top: 0,
+      left: 0,
+    },
+    mentions: [],
+  };
+
+  onReturn = event => {
+    // TODO: Handle return statement
+  };
+
+  /**
+   * @param {Object} event
+   */
   onKeyUp = event => {
     switch (event.keyCode) {
       case KEYS.RETURN: {
-        this.onPressEnter(event);
+        this.onReturn(event);
         break;
       }
       case KEYS.ESC: {
@@ -315,59 +320,37 @@ export default class TextArea extends Component {
     }
   };
 
-  onPressEnter = event => {};
+  /**
+   * @param {String} value
+   */
+  onChange = value => {
+    this.setState({
+      value,
+    });
+  };
 
   /**
-   * Handle textarea on scroll event.
+   * @param {Object} event
    */
-  onScroll = event => {
-    const { scrollTop, scrollLeft } = event.target;
+  onScroll = ({ scrollTop, scrollLeft }) => {
     this.backdrop.scroll({ scrollTop, scrollLeft });
   };
 
   /**
-   * Handles the click event on the Suggestion component.
+   * @param {Object} coords
    */
-  onMentionSelect = (event, user, index) => {
-    this.onMentionClose();
-    console.log(user, index);
+  onUpdateCoords = coords => {
+    this.setState({
+      coords,
+    });
   };
 
   /**
-   * Handles changing of active mention suggestion.
-   * If the next active go over the length of the
-   * suggestions, Well back to zero. Lesser than zero
-   * well go to the last item.
-   *
-   * @param {String} dir
-   *
-   * @returns {void}
+   * @param {String} mention
    */
-  setActiveSuggestion(dir) {
-    const nextActive =
-      dir === KEYS.UP
-        ? this.state.activeSuggestion - 1
-        : this.state.activeSuggestion + 1;
-
-    if (
-      nextActive > this.props.suggestions.length - 1 ||
-      this.props.suggestions.length === 1
-    ) {
-      return this.setState({
-        activeSuggestion: 0,
-      });
-    }
-
-    if (nextActive < 0) {
-      return this.setState({
-        activeSuggestion: this.props.suggestions.length - 1,
-      });
-    }
-
-    this.setState({
-      activeSuggestion: nextActive,
-    });
-  }
+  onMentionMatched = mention => {
+    // TODO: Handle on mention statement.
+  };
 
   render() {
     return (
@@ -379,15 +362,19 @@ export default class TextArea extends Component {
           <Highlighter value={this.state.value} />
         </Backdrop>
 
-        <textarea
-          className="Mention-textarea"
-          autoFocus={true}
-          ref={textarea => (this.textarea = textarea)}
+        <TextInput
+          onMentionMatched={this.onMentionMatched}
           onChange={this.onChange}
-          onScroll={this.onScroll}
           onKeyUp={this.onKeyUp}
+          onScroll={this.onScroll}
+          onUpdateCoords={this.onUpdateCoords}
           value={this.state.value}
-          spellCheck={false}
+        />
+
+        <Suggestions
+          isOpen={this.state.isMentionOpen}
+          coords={this.state.coords}
+          options={this.props.suggestions}
         />
       </div>
     );

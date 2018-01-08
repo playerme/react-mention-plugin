@@ -16,6 +16,7 @@
 }
 
 .Mention-container {
+  border: solid 1px #ccc;
   display: block;
   position: relative;
 
