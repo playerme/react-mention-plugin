@@ -3,7 +3,7 @@
 // Note that some browsers, such as Firefox, do not concatenate properties
 // into their shorthand (e.g. padding-top, padding-bottom etc. -> padding),
 // so we have to list every single property explicitly.
-var properties = [
+let properties = [
   'direction', // RTL support
   'boxSizing',
   'width', // on Chrome and IE, exclude the scrollbar, so the mirror div wraps exactly as the textarea does
@@ -44,8 +44,8 @@ var properties = [
   'MozTabSize',
 ];
 
-var isBrowser = typeof window !== 'undefined';
-var isFirefox = isBrowser && window.mozInnerScreenX != null;
+let isBrowser = typeof window !== 'undefined';
+let isFirefox = isBrowser && window.mozInnerScreenX != null;
 
 export default function getCaretCoordinates(element, position, options) {
   if (!isBrowser) {
@@ -54,24 +54,24 @@ export default function getCaretCoordinates(element, position, options) {
     );
   }
 
-  var debug = (options && options.debug) || false;
+  let debug = (options && options.debug) || false;
   if (debug) {
-    var el = document.querySelector(
+    let el = document.querySelector(
       '#input-textarea-caret-position-mirror-div'
     );
     if (el) el.parentNode.removeChild(el);
   }
 
   // The mirror div will replicate the textarea's style
-  var div = document.createElement('div');
+  let div = document.createElement('div');
   div.id = 'input-textarea-caret-position-mirror-div';
   document.body.appendChild(div);
 
-  var style = div.style;
-  var computed = window.getComputedStyle
+  let style = div.style;
+  let computed = window.getComputedStyle
     ? window.getComputedStyle(element)
     : element.currentStyle; // currentStyle for IE < 9
-  var isInput = element.nodeName === 'INPUT';
+  let isInput = element.nodeName === 'INPUT';
 
   // Default textarea styles
   style.whiteSpace = 'pre-wrap';
@@ -104,7 +104,7 @@ export default function getCaretCoordinates(element, position, options) {
   // spaces need to be replaced with non-breaking spaces - http://stackoverflow.com/a/13402035/1269037
   if (isInput) div.textContent = div.textContent.replace(/\s/g, '\u00a0');
 
-  var span = document.createElement('span');
+  let span = document.createElement('span');
   // Wrapping must be replicated *exactly*, including when a long word gets
   // onto the next line, with whitespace at the end of the line before (#7).
   // The  *only* reliable way to do that is to copy the *entire* rest of the
@@ -113,7 +113,7 @@ export default function getCaretCoordinates(element, position, options) {
   span.textContent = element.value.substring(position) || '.'; // || because a completely empty faux span doesn't render at all
   div.appendChild(span);
 
-  var coordinates = {
+  let coordinates = {
     top: span.offsetTop + parseInt(computed['borderTopWidth']),
     left: span.offsetLeft + parseInt(computed['borderLeftWidth']),
     height: parseInt(computed['lineHeight']),

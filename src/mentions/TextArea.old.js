@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-// import debounce from 'lodash/debounce';
-// import Suggestions from './Suggestions';
+import debounce from 'lodash/debounce';
+import Suggestions from './Suggestions';
+import ReactDOM from 'react-dom';
 import getCoordinates from './getCoordinates';
 
 import './TextArea.css';
@@ -14,65 +15,6 @@ const KEYS = {
   LEFT: 37,
   RIGHT: 39,
 };
-
-class Highlighter extends Component {
-  /**
-   * @param {Array|Object|null} value
-   */
-  getHtmlValue(value) {
-    return value
-      .split(/(@\w+)/g)
-      .map((str, key) => {
-        if (
-          str.length > 1 &&
-          str[0] === '@'
-          // this.state.mentions.indexOf(str) !== -1
-        ) {
-          return (
-            <mark key={key} className="Mention-mark">
-              {str}
-            </mark>
-          );
-        } else if (str.length > 0) {
-          return str;
-        } else {
-          return null;
-        }
-      })
-      .filter(el => el !== null);
-  }
-
-  render() {
-    return [
-      <div key="0" className="Mention-highlights">
-        {this.getHtmlValue(this.props.value)}
-      </div>,
-      <br key="1" />,
-    ];
-  }
-}
-
-class Backdrop extends Component {
-  /**
-   * @param {Number} props.scrollTop
-   * @param {Number} props.scrollLeft
-   */
-  scroll = ({ scrollTop, scrollLeft }) => {
-    this.backdrop.scrollTop = scrollTop;
-    this.backdrop.scrollLeft = scrollLeft;
-  };
-
-  render() {
-    return (
-      <div
-        ref={backdrop => (this.backdrop = backdrop)}
-        className="Mention-backdrop"
-      >
-        {this.props.children}
-      </div>
-    );
-  }
-}
 
 export default class TextArea extends Component {
   /**
@@ -123,7 +65,7 @@ export default class TextArea extends Component {
   state = {
     activeSuggestion: 0,
     value: '',
-    valueHtml: [],
+    valueRaw: [],
     isMentionOpen: false,
     coords: {
       top: 0,
@@ -154,6 +96,7 @@ export default class TextArea extends Component {
   onChange = event => {
     this.setState({
       value: event.target.value,
+      valueRaw: this.getContents(event.target.value),
     });
   };
 
@@ -317,12 +260,11 @@ export default class TextArea extends Component {
 
   onPressEnter = event => {};
 
-  /**
-   * Handle textarea on scroll event.
-   */
-  onScroll = event => {
-    const { scrollTop, scrollLeft } = event.target;
-    this.backdrop.scroll({ scrollTop, scrollLeft });
+  syncScrollbars = () => {
+    return debounce(() => {
+      this.backdrop.scrollTop = this.textarea.scrollTop;
+      this.backdrop.scrollLeft = this.textarea.scrollLeft;
+    });
   };
 
   /**
@@ -369,25 +311,60 @@ export default class TextArea extends Component {
     });
   }
 
+  /**
+   * Returns a parsed text value. Replaces mentions with mark tag.
+   *
+   * @returns {Array}
+   */
+  getContents(value) {
+    return value.split(/(@\w+)/g).map((str, key) => {
+      if (
+        str.length > 1 &&
+        str[0] === '@'
+        // this.state.mentions.indexOf(str) !== -1
+      ) {
+        return (
+          <mark key={key} className="Mention-mark">
+            {str}
+          </mark>
+        );
+      } else if (str.length > 0) {
+        return str;
+      } else {
+        return null;
+      }
+    });
+  }
+
   render() {
     return (
       <div
         ref={component => (this.component = component)}
         className="Mention-container"
       >
-        <Backdrop ref={backdrop => (this.backdrop = backdrop)}>
-          <Highlighter value={this.state.value} />
-        </Backdrop>
-
+        <div
+          id="backdrop"
+          ref={backdrop => (this.backdrop = backdrop)}
+          className="Mention-backdrop"
+        >
+          <div className="Mention-highlights">{this.state.valueRaw}</div>
+        </div>
         <textarea
           className="Mention-textarea"
           autoFocus={true}
           ref={textarea => (this.textarea = textarea)}
           onChange={this.onChange}
-          onScroll={this.onScroll}
+          onScroll={this.syncScrollbars()}
           onKeyUp={this.onKeyUp}
           value={this.state.value}
           spellCheck={false}
+        />
+        <Suggestions
+          active={this.state.activeSuggestion}
+          isOpen={this.state.isMentionOpen}
+          coords={this.state.coords}
+          onSelect={this.onMentionSelect}
+          options={this.props.suggestions}
         />
       </div>
     );

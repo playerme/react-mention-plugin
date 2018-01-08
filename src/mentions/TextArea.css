@@ -2,75 +2,56 @@
   box-sizing: border-box;
 }
 
-.Mention-container, .Mention-textarea, .Mention-backdrop {
-  height: 100px;
-  width: 300px;
+.Mention-container, .Mention-backdrop, .Mention-textarea {
+  color: inherit;
+  height: 180px;
+  width: 460px;
+}
+
+.Mention-highlights, .Mention-textarea {
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+  padding: 0;
 }
 
 .Mention-container {
   display: block;
-  font-size: .9em;
-  margin: 0 auto;
   position: relative;
 
   -webkit-text-size-adjust: none;
 }
 
 .Mention-backdrop {
-  display: block;
-  margin: 0;
+  background-color: transparent;
+  border: none;
   overflow: auto;
-  padding: 5px;
+  pointer-events: none;
   position: absolute;
   z-index: 1;
-
-  -webkit-appearance: textarea;
-  -moz-appearance: textfield-multiline;
 }
 
 .Mention-highlights {
-  color: inherit;
+  color: transparent;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
 
 .Mention-textarea {
   background-color: transparent;
+  border: none;
   border-radius: 0;
-  color: transparent;
   display: block;
   margin: 0;
   overflow: auto;
-  padding: 4px;
   position: absolute;
   resize: none;
   z-index: 2;
-
-  caret-color: black;
 }
 
 .Mention-mark {
-  background-color: #d0bfff;
-  color: inherit;
-  padding: 0;
-}
-
-.Mention-mark, .Mention-backdrop, .Mention-textarea {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-.Mention-suggestions {
-  -moz-box-shadow: -1px 2px 16px -1px rgba(0, 0, 0, .5);
-  -webkit-box-shadow: -1px 2px 16px -1px rgba(0, 0, 0, .5);
-  background-color: white;
-  border: solid 1px #ccc;
-  box-shadow: -1px 2px 16px -1px rgba(0, 0, 0, .5);
-  max-height: 200px;
-  overflow: auto;
-  position: absolute;
-  width: 150px;
-  z-index: 3;
+  background-color: #b1d5e5;
+  color: transparent;
 }
 
 .Mention-suggestions > ul {
@@ -95,7 +76,3 @@
 .Mention-suggestions > ul > li > a.active {
   background-color: #ccc;
 }
-/* 
-.Mention-suggestions > ul > li > a:hover {
-  background-color: #ddd;
-} */
