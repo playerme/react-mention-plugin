@@ -110,7 +110,7 @@ class TextInput extends Component {
     onKeyUp: PropTypes.func,
     onKeyPress: PropTypes.func,
     onKeyDown: PropTypes.func,
-    onReturn: PropTypes.func,
+    onEnter: PropTypes.func,
     value: PropTypes.func,
   };
 
@@ -125,7 +125,7 @@ class TextInput extends Component {
     onKeyUp: () => {},
     onKeyPress: () => {},
     onKeyDown: () => {},
-    onReturn: () => {},
+    onEnter: () => {},
     value: () => {},
   };
   /**
@@ -254,7 +254,7 @@ class TextInput extends Component {
    */
   onKeyPress = event => {
     if (event.keyCode === KEYS.RETURN || event.which === KEYS.RETURN) {
-      this.props.onReturn(event);
+      this.props.onEnter(event);
     } else {
       this.props.onKeyPress(event);
     }
@@ -373,13 +373,13 @@ class TextArea extends Component {
    *
    * @param {Object} event
    */
-  onReturn = event => {
+  onEnter = event => {
     if (this.state.isMentionOpen) {
       event.preventDefault();
       this.selectMentionOnEnter();
       return;
     } else {
-      this.props.onReturn(this.state.value);
+      this.props.onEnter(this.state.value);
     }
   };
 
@@ -571,7 +571,7 @@ class TextArea extends Component {
           ref={textarea => (this.textarea = textarea)}
           onMention={this.onMention}
           onChange={this.onChange}
-          onReturn={this.onReturn}
+          onEnter={this.onEnter}
           onKeyUp={this.onKeyUp}
           onScroll={this.onScroll}
           onUpdateCoords={this.onUpdateCoords()}
