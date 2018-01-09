@@ -299,6 +299,7 @@ class TextArea extends Component {
    * @property {Object} defaultProps
    */
   static defaultProps = {
+    value: '',
     suggestions: [],
   };
 
@@ -314,6 +315,48 @@ class TextArea extends Component {
       left: 0,
     },
     mentions: [],
+  };
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      value: nextProps.value || '',
+    });
+  }
+
+  /**
+   * Closes mention suggestions
+   */
+  closeMention = () => this.onMentionClose();
+
+  /**
+   * Opens mention suggestions
+   */
+  openMention = () => this.onMentionOpen();
+
+  /**
+   * Focus to the textarea
+   */
+  focus = () => this.textarea.focus();
+
+  /**
+   * Out focus on the textarea
+   */
+  blur = () => this.textarea.blur();
+
+  /**
+   * Clears the contents
+   */
+  clearContent = () => {
+    this.setState({
+      value: '',
+    });
+  };
+
+  /**
+   * @param {String} value
+   */
+  setContent = value => {
+    this.setState({ value });
   };
 
   /**
@@ -335,6 +378,8 @@ class TextArea extends Component {
       event.preventDefault();
       this.selectMentionOnEnter();
       return;
+    } else {
+      this.props.onReturn(this.state.value);
     }
   };
 
