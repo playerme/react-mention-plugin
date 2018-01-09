@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 import Suggestions from './Suggestions';
 import getCoordinates from './getCoordinates';
@@ -121,7 +122,53 @@ class TextInput extends Component {
     onKeyUp: () => {},
     value: () => {},
   };
+  /**
+   * @param {Object} event
+   */
+  onChange = event => {
+    this.props.onChange(event.target.value);
 
+    const mentioned = this.getLastWord(event.target);
+    const isMatched = this.isMatched(mentioned);
+
+    if (mentioned && mentioned.length > 3 && isMatched) {
+      this.props.onMention(mentioned);
+    } else {
+      this.props.onMention(false);
+    }
+
+    this.onUpdateCoords();
+  };
+
+  /**
+   * @param {Object} event
+   */
+  onScroll = event => {
+    this.props.onScroll({
+      scrollLeft: event.target.scrollLeft,
+      scrollTop: event.target.scrollTop,
+    });
+  };
+
+  /**
+   * Gets the last word being modified.
+   *
+   * @param {Object} textarea
+   */
+  getLastWord(textarea) {
+    const mentioned = this.getCurrentText(
+      textarea.value,
+      this.getCaretPosition(textarea)
+    );
+
+    if (!mentioned) return '';
+
+    const splitted = mentioned.split(/(\n| |\r)/);
+
+    if (splitted.length > 1) return '';
+
+    return mentioned;
+  }
   /**
    * Checks if the text is a mention.
    *
@@ -131,30 +178,6 @@ class TextInput extends Component {
    */
   isMatched(text) {
     return /(@\w+)/g.test(text);
-  }
-
-  /**
-   * Gets the last word being modified.
-   *
-   * @param {Object} textarea
-   */
-  getLastMentioned(textarea) {
-    const mentioned = this.getCurrentText(
-      textarea.value,
-      this.getCaretPosition(textarea)
-    );
-
-    if (!mentioned) return '';
-
-    if (
-      (mentioned && mentioned[mentioned.length - 1] === '\n') ||
-      mentioned[mentioned.length - 1] === '\r' ||
-      mentioned[mentioned.length - 1] === ''
-    ) {
-      return '';
-    } else {
-      return mentioned;
-    }
   }
 
   /**
@@ -214,34 +237,6 @@ class TextInput extends Component {
     });
   }
 
-  /**
-   * @param {Object} event
-   */
-  onChange = event => {
-    this.props.onChange(event.target.value);
-
-    const mentioned = this.getLastMentioned(event.target);
-    const isMatched = this.isMatched(mentioned);
-
-    if (mentioned && mentioned.length > 3 && isMatched) {
-      this.props.onMention(mentioned);
-    } else {
-      this.props.onMention(false);
-    }
-
-    this.onUpdateCoords();
-  };
-
-  /**
-   * @param {Object} event
-   */
-  onScroll = event => {
-    this.props.onScroll({
-      scrollLeft: event.target.scrollLeft,
-      scrollTop: event.target.scrollTop,
-    });
-  };
-
   render() {
     return (
       <textarea
@@ -258,7 +253,7 @@ class TextInput extends Component {
   }
 }
 
-export default class TextArea extends Component {
+class TextArea extends Component {
   static propTypes = {
     suggestions: PropTypes.array,
   };
@@ -282,6 +277,15 @@ export default class TextArea extends Component {
       left: 0,
     },
     mentions: [],
+  };
+
+  /**
+   * Handles click outside event for closing suggestions component.
+   *
+   * @param {Object} evt
+   */
+  handleClickOutside = evt => {
+    this.onMentionClose();
   };
 
   onReturn = event => {
@@ -446,3 +450,5 @@ export default class TextArea extends Component {
     );
   }
 }
+
+export default onClickOutside(TextArea);
