@@ -160,20 +160,16 @@ class TextInput extends Component {
    * Gets the last word being modified.
    *
    * @param {Object} textarea
+   *
+   * @returns {Boolean|String}
    */
   getLastWord(textarea) {
-    const mentioned = this.getCurrentText(
+    const lastWord = this.getCurrentText(
       textarea.value,
       this.getCaretPosition(textarea)
     );
 
-    if (!mentioned) return false;
-
-    const splitted = mentioned.split(/(\n| |\r)/);
-
-    if (splitted.length > 1) return false;
-
-    return mentioned;
+    return lastWord ? lastWord : false;
   }
 
   /**
@@ -186,9 +182,10 @@ class TextInput extends Component {
     const preText = text.substring(0, caretPosition);
     if (preText.indexOf(' ') > 0) {
       const words = preText.split(' ');
-      return words[words.length - 1]; //return last word
+      const lastWord = words[words.length - 1];
+      return lastWord.trim ? lastWord.trim() : lastWord;
     } else {
-      return preText;
+      return preText.trim ? preText.trim() : preText;
     }
   }
 
