@@ -108,6 +108,9 @@ class TextInput extends Component {
     onMention: PropTypes.func,
     onScroll: PropTypes.func,
     onKeyUp: PropTypes.func,
+    onKeyPress: PropTypes.func,
+    onKeyDown: PropTypes.func,
+    onReturn: PropTypes.func,
     value: PropTypes.func,
   };
 
@@ -120,6 +123,9 @@ class TextInput extends Component {
     onMention: () => {},
     onScroll: () => {},
     onKeyUp: () => {},
+    onKeyPress: () => {},
+    onKeyDown: () => {},
+    onReturn: () => {},
     value: () => {},
   };
   /**
@@ -243,6 +249,25 @@ class TextInput extends Component {
     });
   }
 
+  /**
+   * @param {Object} event
+   */
+  onKeyPress = event => {
+    if (event.keyCode === KEYS.RETURN || event.which === KEYS.RETURN) {
+      this.props.onReturn(event);
+    } else {
+      this.props.onKeyPress(event);
+    }
+  };
+
+  /**
+   * @param {Object} event
+   */
+  onKeyDown = event => {
+    this.onUpdateCoords();
+    this.props.onKeyDown(event);
+  };
+
   focus = () => this.textarea.focus();
 
   blur = () => this.textarea.blur();
@@ -255,8 +280,9 @@ class TextInput extends Component {
         ref={textarea => (this.textarea = textarea)}
         onChange={this.onChange}
         onScroll={this.onScroll}
-        onKeyUp={this.props.onKeyUp}
         onKeyPress={this.onKeyPress}
+        onKeyDown={this.onKeyDown}
+        onKeyUp={this.props.onKeyUp}
         value={this.props.value}
         spellCheck={false}
       />
@@ -299,8 +325,17 @@ class TextArea extends Component {
     this.onMentionClose();
   };
 
+  /**
+   * Handle on enter event.
+   *
+   * @param {Object} event
+   */
   onReturn = event => {
-    // TODO: Handle return statement
+    if (this.state.isMentionOpen) {
+      event.preventDefault();
+      this.selectMentionOnEnter();
+      return;
+    }
   };
 
   /**
@@ -308,10 +343,6 @@ class TextArea extends Component {
    */
   onKeyUp = event => {
     switch (event.keyCode) {
-      case KEYS.RETURN: {
-        this.onReturn(event);
-        break;
-      }
       case KEYS.ESC: {
         this.state.isMentionOpen && this.onMentionClose();
         break;
@@ -382,6 +413,7 @@ class TextArea extends Component {
    */
   onMentionOpen = () => {
     this.setState({
+      activeSuggestion: 0,
       isMentionOpen: true,
     });
   };
@@ -425,6 +457,20 @@ class TextArea extends Component {
         this.textarea.focus();
       }
     );
+  }
+
+  /**
+   * @returns {void}
+   */
+  selectMentionOnEnter() {
+    const user = this.props.suggestions[this.state.activeSuggestion];
+
+    if (user) {
+      this.textarea.replaceText(user.value);
+      this.onAddMention(user.value);
+    }
+
+    this.onMentionClose();
   }
 
   /**
@@ -480,6 +526,7 @@ class TextArea extends Component {
           ref={textarea => (this.textarea = textarea)}
           onMention={this.onMention}
           onChange={this.onChange}
+          onReturn={this.onReturn}
           onKeyUp={this.onKeyUp}
           onScroll={this.onScroll}
           onUpdateCoords={this.onUpdateCoords()}
