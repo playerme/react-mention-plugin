@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import debounce from 'lodash/debounce';
 import onClickOutside from 'react-onclickoutside';
 import PropTypes from 'prop-types';
 import Suggestions from './Suggestions';
@@ -38,11 +39,9 @@ class Highlighter extends Component {
     return value
       .split(/(@\w+)/g)
       .map((str, key) => {
-        if (
-          str.length > 1 &&
-          str[0] === '@'
-          // this.state.mentions.indexOf(str) !== -1
-        ) {
+        const split = str.split('@');
+
+        if (str.length > 1 && str[0] === '@') {
           return (
             <mark key={key} className="Mention-mark">
               {str}
@@ -128,16 +127,16 @@ class TextInput extends Component {
   onChange = event => {
     this.props.onChange(event.target.value);
 
+    this.onUpdateCoords();
+
     const mentioned = this.getLastWord(event.target);
-    const isMatched = this.isMatched(mentioned);
+    const isMatched = /(@\w+)/g.test(mentioned);
 
     if (mentioned && mentioned.length > 3 && isMatched) {
       this.props.onMention(mentioned);
     } else {
       this.props.onMention(false);
     }
-
-    this.onUpdateCoords();
   };
 
   /**
@@ -161,23 +160,13 @@ class TextInput extends Component {
       this.getCaretPosition(textarea)
     );
 
-    if (!mentioned) return '';
+    if (!mentioned) return false;
 
     const splitted = mentioned.split(/(\n| |\r)/);
 
-    if (splitted.length > 1) return '';
+    if (splitted.length > 1) return false;
 
     return mentioned;
-  }
-  /**
-   * Checks if the text is a mention.
-   *
-   * @param {String} text
-   *
-   * @returns {Boolean}
-   */
-  isMatched(text) {
-    return /(@\w+)/g.test(text);
   }
 
   /**
@@ -342,13 +331,12 @@ class TextArea extends Component {
     this.backdrop.scroll({ scrollTop, scrollLeft });
   };
 
-  /**
-   * @param {Object} coords
-   */
-  onUpdateCoords = coords => {
-    this.setState({
-      coords,
-    });
+  onUpdateCoords = () => {
+    return debounce(coords => {
+      this.setState({
+        coords,
+      });
+    }, 200);
   };
 
   /**
@@ -367,7 +355,6 @@ class TextArea extends Component {
    */
   onMentionOpen = () => {
     this.setState({
-      activeSuggestion: 0,
       isMentionOpen: true,
     });
   };
@@ -378,10 +365,6 @@ class TextArea extends Component {
   onMentionClose = () => {
     this.setState({
       isMentionOpen: false,
-      coords: {
-        top: 0,
-        left: 0,
-      },
     });
   };
 
@@ -436,7 +419,7 @@ class TextArea extends Component {
           onChange={this.onChange}
           onKeyUp={this.onKeyUp}
           onScroll={this.onScroll}
-          onUpdateCoords={this.onUpdateCoords}
+          onUpdateCoords={this.onUpdateCoords()}
           value={this.state.value}
         />
 
