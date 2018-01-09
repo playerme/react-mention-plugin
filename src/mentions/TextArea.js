@@ -292,7 +292,9 @@ class TextInput extends Component {
 
 class TextArea extends Component {
   static propTypes = {
+    value: PropTypes.string,
     suggestions: PropTypes.array,
+    onEnter: PropTypes.func,
   };
 
   /**
@@ -301,6 +303,7 @@ class TextArea extends Component {
   static defaultProps = {
     value: '',
     suggestions: [],
+    onEnter: () => {},
   };
 
   /**
