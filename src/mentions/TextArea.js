@@ -23,6 +23,7 @@ class Highlighter extends Component {
    */
   static defaultProps = {
     value: [],
+    mentions: [],
   };
 
   /**
@@ -30,18 +31,18 @@ class Highlighter extends Component {
    */
   static propTypes = {
     value: PropTypes.string.isRequired,
+    mentions: PropTypes.array.isRequired,
   };
 
   /**
    * @param {Array|null} value
+   * @param {Array} mentions
    */
-  getHtmlValue(value) {
+  getHtmlValue(value, mentions = []) {
     return value
       .split(/(@\w+)/g)
       .map((str, key) => {
-        const split = str.split('@');
-
-        if (str.length > 1 && str[0] === '@') {
+        if (mentions.indexOf(str) !== -1) {
           return (
             <mark key={key} className="Mention-mark">
               {str}
@@ -59,7 +60,7 @@ class Highlighter extends Component {
   render() {
     return [
       <div key="0" className="Mention-highlights">
-        {this.getHtmlValue(this.props.value)}
+        {this.getHtmlValue(this.props.value, this.props.mentions)}
       </div>,
       <br key="1" />,
     ];
@@ -125,9 +126,9 @@ class TextInput extends Component {
    * @param {Object} event
    */
   onChange = event => {
-    this.props.onChange(event.target.value);
-
     this.onUpdateCoords();
+
+    this.props.onChange(event.target.value);
 
     const mentioned = this.getLastWord(event.target);
     const isMatched = /(@\w+)/g.test(mentioned);
@@ -204,6 +205,22 @@ class TextInput extends Component {
   }
 
   /**
+   * @param {String} value
+   */
+  replaceText(value) {
+    const currentPosition = this.getCaretPosition(this.textarea);
+    const prevText = this.props.value.substring(0, currentPosition);
+
+    const fragment1 = prevText.substring(0, prevText.lastIndexOf('@'));
+    const fragment2 = this.props.value.substring(
+      currentPosition,
+      this.props.value.length
+    );
+
+    return this.props.onChange(`${fragment1}@${value}${fragment2} `);
+  }
+
+  /**
    * Updates mention suggestions coordinates.
    *
    * @returns {void}
@@ -226,6 +243,10 @@ class TextInput extends Component {
     });
   }
 
+  focus = () => this.textarea.focus();
+
+  blur = () => this.textarea.blur();
+
   render() {
     return (
       <textarea
@@ -235,6 +256,7 @@ class TextInput extends Component {
         onChange={this.onChange}
         onScroll={this.onScroll}
         onKeyUp={this.props.onKeyUp}
+        onKeyPress={this.onKeyPress}
         value={this.props.value}
         spellCheck={false}
       />
@@ -331,6 +353,11 @@ class TextArea extends Component {
     this.backdrop.scroll({ scrollTop, scrollLeft });
   };
 
+  /**
+   * Update coords state with debounce.
+   *
+   * @returns {Function}
+   */
   onUpdateCoords = () => {
     return debounce(coords => {
       this.setState({
@@ -364,9 +391,41 @@ class TextArea extends Component {
    */
   onMentionClose = () => {
     this.setState({
+      coords: {},
       isMentionOpen: false,
     });
   };
+
+  /**
+   * @param {Object} event
+   * @param {Object} user
+   * @param {Number}
+   *
+   * @returns {void}
+   */
+  onMentionSelect = (event, user, index) => {
+    this.onMentionClose();
+    this.textarea.replaceText(user.value);
+    this.onAddMention(user.value);
+  };
+
+  /**
+   * Add mention to the state then focus on thext area with extra space after.
+   *
+   * @param {String} value
+   *
+   * @returns {void}
+   */
+  onAddMention(value) {
+    this.setState(
+      {
+        mentions: this.state.mentions.concat([`@${value}`]),
+      },
+      () => {
+        this.textarea.focus();
+      }
+    );
+  }
 
   /**
    * Handles changing of active mention suggestion.
@@ -411,10 +470,14 @@ class TextArea extends Component {
         className="Mention-container"
       >
         <Backdrop ref={backdrop => (this.backdrop = backdrop)}>
-          <Highlighter value={this.state.value} />
+          <Highlighter
+            value={this.state.value}
+            mentions={this.state.mentions}
+          />
         </Backdrop>
 
         <TextInput
+          ref={textarea => (this.textarea = textarea)}
           onMention={this.onMention}
           onChange={this.onChange}
           onKeyUp={this.onKeyUp}
@@ -428,6 +491,7 @@ class TextArea extends Component {
           isOpen={this.state.isMentionOpen}
           coords={this.state.coords}
           options={this.props.suggestions}
+          onSelect={this.onMentionSelect}
         />
       </div>
     );

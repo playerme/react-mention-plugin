@@ -60,8 +60,11 @@
 }
 
 .Mention-suggestions {
+  -moz-box-shadow: -1px 0 5px 1px rgba(0, 0, 0, .61);
+  -webkit-box-shadow: -1px 0 5px 1px rgba(0, 0, 0, .61);
   background-color: #fff;
   border: solid 1px #ccc;
+  box-shadow: -1px 0 5px 1px rgba(0, 0, 0, .61);
   position: absolute;
   width: 200px;
   z-index: 3;

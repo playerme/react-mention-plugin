@@ -64,7 +64,7 @@ export default class Suggestions extends PureComponent {
                 href="/"
                 onClick={this.onClick(user, index)}
               >
-                {user.name}
+                {user.label}
               </a>
             </li>
           ))}

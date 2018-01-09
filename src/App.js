@@ -12,22 +12,26 @@ class App extends Component {
             {
               id: 1,
               avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
-              name: 'Fred Smith',
+              value: 'Fred_Smith',
+              label: 'Fred Smith',
             },
             {
               id: 2,
               avatar: 'https://randomuser.me/api/portraits/men/59.jpg',
-              name: 'Ronald Horn',
+              value: 'Ronald_Horn',
+              label: 'Ronald Horn',
             },
             {
               id: 3,
               avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
-              name: 'Joseph Jones',
+              value: 'Joseph_Jones',
+              label: 'Joseph Jones',
             },
             {
               id: 4,
               avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
-              name: 'Kumar Patel',
+              value: 'Kumar_Patel',
+              label: 'Kumar Patel',
             },
           ]}
         />
