@@ -17,6 +17,17 @@ const KEYS = {
   RIGHT: 39,
 };
 
+const ProxyPre = ({ value, isVisible = false }) => {
+  return (
+    isVisible && (
+      <pre className="Mention-proxy">
+        {value}
+        <br />
+      </pre>
+    )
+  );
+};
+
 class Highlighter extends Component {
   /**
    * @property {Object} propTypes
@@ -72,11 +83,17 @@ class Backdrop extends Component {
    * @property {Object} propTypes
    */
   static propTypes = {
+    autoResize: PropTypes.bool,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
     ]).isRequired,
   };
+
+  static defaultProps = {
+    autoResize: false,
+  };
+
   /**
    * @param {Number} props.scrollTop
    * @param {Number} props.scrollLeft
@@ -86,9 +103,17 @@ class Backdrop extends Component {
     this.backdrop.scrollLeft = scrollLeft;
   };
 
+  getCustomStyle() {
+    return {
+      height: this.props.height,
+      overflow: this.props.autoResize ? 'hidden' : 'auto',
+    };
+  }
+
   render() {
     return (
       <div
+        style={this.getCustomStyle()}
         ref={backdrop => (this.backdrop = backdrop)}
         className="Mention-backdrop"
       >
@@ -103,6 +128,7 @@ class TextInput extends Component {
    * @property {Object} propTypes
    */
   static defaultProps = {
+    autoResize: PropTypes.bool,
     onChange: PropTypes.func,
     onUpdateCoords: PropTypes.func,
     onMention: PropTypes.func,
@@ -118,6 +144,7 @@ class TextInput extends Component {
    * @property {Object} defaultProps
    */
   static defaultProps = {
+    autoResize: false,
     onChange: () => {},
     onUpdateCoords: () => {},
     onMention: () => {},
@@ -137,6 +164,7 @@ class TextInput extends Component {
     this.props.onChange(event.target.value);
 
     const mentioned = this.getLastWord(event.target);
+
     const isMatched = /(@\w+)/g.test(mentioned);
 
     if (mentioned && mentioned.length > 3 && isMatched) {
@@ -214,13 +242,13 @@ class TextInput extends Component {
     const currentPosition = this.getCaretPosition(this.textarea);
     const prevText = this.props.value.substring(0, currentPosition);
 
-    const fragment1 = prevText.substring(0, prevText.lastIndexOf('@'));
-    const fragment2 = this.props.value.substring(
+    const textPart1 = prevText.substring(0, prevText.lastIndexOf('@'));
+    const textPart2 = this.props.value.substring(
       currentPosition,
       this.props.value.length
     );
 
-    return this.props.onChange(`${fragment1}@${value}${fragment2} `);
+    return this.props.onChange(`${textPart1}@${value}${textPart2} `);
   }
 
   /**
@@ -250,6 +278,8 @@ class TextInput extends Component {
    * @param {Object} event
    */
   onKeyPress = event => {
+    this.onScroll(event);
+
     if (event.keyCode === KEYS.RETURN || event.which === KEYS.RETURN) {
       this.props.onEnter(event);
     } else {
@@ -263,23 +293,47 @@ class TextInput extends Component {
   onKeyDown = event => {
     this.onUpdateCoords();
     this.props.onKeyDown(event);
+    this.onScroll(event);
   };
 
+  onKeyUp = event => {
+    this.props.onKeyUp(event);
+    this.onScroll(event);
+  };
+
+  /**
+   * @returns {Object}
+   */
+  getCustomStyle() {
+    return {
+      overflow: this.props.autoResize ? 'hidden' : 'auto',
+    };
+  }
+
+  /**
+   * @returns {void}
+   */
   focus = () => this.textarea.focus();
 
+  /**
+   * @returns {void}
+   */
   blur = () => this.textarea.blur();
 
   render() {
     return (
       <textarea
+        style={this.getCustomStyle()}
         className="Mention-textarea"
         autoFocus={true}
         ref={textarea => (this.textarea = textarea)}
         onChange={this.onChange}
+        onPaste={this.onChange}
+        onCut={this.onChange}
         onScroll={this.onScroll}
         onKeyPress={this.onKeyPress}
         onKeyDown={this.onKeyDown}
-        onKeyUp={this.props.onKeyUp}
+        onKeyUp={this.onKeyUp}
         value={this.props.value}
         spellCheck={false}
       />
@@ -289,8 +343,11 @@ class TextInput extends Component {
 
 class TextArea extends Component {
   static propTypes = {
+    autoResize: PropTypes.bool,
     value: PropTypes.string,
     suggestions: PropTypes.array,
+    height: PropTypes.number,
+    width: PropTypes.number,
     onEnter: PropTypes.func,
   };
 
@@ -298,6 +355,7 @@ class TextArea extends Component {
    * @property {Object} defaultProps
    */
   static defaultProps = {
+    autoResize: false,
     value: '',
     suggestions: [],
     onEnter: () => {},
@@ -315,6 +373,7 @@ class TextArea extends Component {
       left: 0,
     },
     mentions: [],
+    height: undefined,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -560,7 +619,12 @@ class TextArea extends Component {
         ref={component => (this.component = component)}
         className="Mention-container"
       >
-        <Backdrop ref={backdrop => (this.backdrop = backdrop)}>
+        <ProxyPre isVisible={this.props.autoResize} value={this.state.value} />
+
+        <Backdrop
+          ref={backdrop => (this.backdrop = backdrop)}
+          autoResize={this.props.autoResize}
+        >
           <Highlighter
             value={this.state.value}
             mentions={this.state.mentions}
@@ -569,6 +633,7 @@ class TextArea extends Component {
 
         <TextInput
           ref={textarea => (this.textarea = textarea)}
+          autoResize={this.props.autoResize}
           onMention={this.onMention}
           onChange={this.onChange}
           onEnter={this.onEnter}

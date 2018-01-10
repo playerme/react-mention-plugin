@@ -1,10 +1,11 @@
 .Mention-container, .Mention-backdrop, .Mention-textarea {
   color: inherit;
-  height: 180px;
-  width: 460px;
+  height: 100%;
+  min-height: 100px;
+  width: 100%;
 }
 
-.Mention-highlights, .Mention-textarea {
+.Mention-highlights, .Mention-textarea, .Mention-proxy {
   font-family: inherit;
   font-size: inherit;
   margin: 0;
@@ -22,9 +23,11 @@
 .Mention-backdrop {
   background-color: transparent;
   border: none;
+  left: 0;
   overflow: auto;
   pointer-events: none;
   position: absolute;
+  top: 0;
   z-index: 1;
 
   -webkit-appearance: textarea;
@@ -37,6 +40,14 @@
   word-wrap: break-word;
 }
 
+.Mention-proxy {
+  background: transparent;
+  color: transparent;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  z-index: -1;
+}
+
 .Mention-textarea {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -45,11 +56,31 @@
   border-radius: 0;
   box-sizing: border-box;
   display: block;
+  left: 0;
   margin: 0;
   overflow: auto;
   position: absolute;
   resize: none;
+  top: 0;
   z-index: 2;
+
+  -ms-box-sizing: border-box;
+}
+
+.Mention-dummy-textarea {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-sizing: border-box;
+  display: block;
+  left: -1000px;
+  margin: 0;
+  overflow: auto;
+  position: absolute;
+  resize: none;
+  z-index: -1;
 
   -ms-box-sizing: border-box;
 }
