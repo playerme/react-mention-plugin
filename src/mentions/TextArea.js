@@ -346,8 +346,6 @@ class TextArea extends Component {
     autoResize: PropTypes.bool,
     value: PropTypes.string,
     suggestions: PropTypes.array,
-    height: PropTypes.number,
-    width: PropTypes.number,
     onEnter: PropTypes.func,
   };
 
