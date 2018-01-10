@@ -41,7 +41,11 @@
 }
 
 .Mention-proxy {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   background: transparent;
+  border: none;
+  box-sizing: border-box;
   color: transparent;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -63,24 +67,6 @@
   resize: none;
   top: 0;
   z-index: 2;
-
-  -ms-box-sizing: border-box;
-}
-
-.Mention-dummy-textarea {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  background-color: transparent;
-  border: none;
-  border-radius: 0;
-  box-sizing: border-box;
-  display: block;
-  left: -1000px;
-  margin: 0;
-  overflow: auto;
-  position: absolute;
-  resize: none;
-  z-index: -1;
 
   -ms-box-sizing: border-box;
 }

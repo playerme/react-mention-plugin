@@ -17,23 +17,74 @@ const KEYS = {
   RIGHT: 39,
 };
 
-const ProxyPre = ({ value, isVisible = false }) => {
-  return (
-    isVisible && (
-      <pre className="Mention-proxy">
-        {value}
-        <br />
-      </pre>
-    )
-  );
-};
+class ProxyPre extends Component {
+  /**
+   * @property {Object} propTypes
+   */
+  static defaultProps = {
+    value: '',
+    isVisible: false,
+  };
+
+  /**
+   * @property {Object} propTypes
+   */
+  static propTypes = {
+    value: PropTypes.string,
+    isVisible: PropTypes.bool,
+  };
+
+  /**
+   * @returns {Number}
+   */
+  getHeight = () => {
+    return this.pre ? this.pre.offsetHeight : 0;
+  };
+
+  /**
+   * @returns {Object}
+   */
+  getComputedStyle() {
+    return this.props.isAbsolute
+      ? {
+          position: 'absolute',
+          overflow: 'hidden',
+          maxHeight: this.props.maxHeight,
+        }
+      : {};
+  }
+
+  render() {
+    if (!this.props.isVisible) {
+      return null;
+    }
+
+    if (this.props.isAbsolute) {
+      return (
+        <div style={this.getComputedStyle()}>
+          <pre ref={pre => (this.pre = pre)} className="Mention-proxy">
+            {this.props.value}
+            <br />
+          </pre>
+        </div>
+      );
+    } else {
+      return (
+        <pre ref={pre => (this.pre = pre)} className="Mention-proxy">
+          {this.props.value}
+          <br />
+        </pre>
+      );
+    }
+  }
+}
 
 class Highlighter extends Component {
   /**
    * @property {Object} propTypes
    */
   static defaultProps = {
-    value: [],
+    value: '',
     mentions: [],
   };
 
@@ -83,7 +134,7 @@ class Backdrop extends Component {
    * @property {Object} propTypes
    */
   static propTypes = {
-    autoResize: PropTypes.bool,
+    overflow: PropTypes.string,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
@@ -91,8 +142,12 @@ class Backdrop extends Component {
   };
 
   static defaultProps = {
-    autoResize: false,
+    overflow: 'auto',
   };
+
+  componentWillUnmount() {
+    this.backdrop = null;
+  }
 
   /**
    * @param {Number} props.scrollTop
@@ -106,7 +161,7 @@ class Backdrop extends Component {
   getCustomStyle() {
     return {
       height: this.props.height,
-      overflow: this.props.autoResize ? 'hidden' : 'auto',
+      overflow: this.props.overflow,
     };
   }
 
@@ -128,7 +183,7 @@ class TextInput extends Component {
    * @property {Object} propTypes
    */
   static defaultProps = {
-    autoResize: PropTypes.bool,
+    overflow: PropTypes.bool,
     onChange: PropTypes.func,
     onUpdateCoords: PropTypes.func,
     onMention: PropTypes.func,
@@ -144,7 +199,7 @@ class TextInput extends Component {
    * @property {Object} defaultProps
    */
   static defaultProps = {
-    autoResize: false,
+    overflow: 'auto',
     onChange: () => {},
     onUpdateCoords: () => {},
     onMention: () => {},
@@ -155,6 +210,11 @@ class TextInput extends Component {
     onEnter: () => {},
     value: () => {},
   };
+
+  componentWillUnmount() {
+    this.textarea = null;
+  }
+
   /**
    * @param {Object} event
    */
@@ -278,8 +338,6 @@ class TextInput extends Component {
    * @param {Object} event
    */
   onKeyPress = event => {
-    this.onScroll(event);
-
     if (event.keyCode === KEYS.RETURN || event.which === KEYS.RETURN) {
       this.props.onEnter(event);
     } else {
@@ -291,14 +349,14 @@ class TextInput extends Component {
    * @param {Object} event
    */
   onKeyDown = event => {
-    this.onUpdateCoords();
     this.props.onKeyDown(event);
-    this.onScroll(event);
   };
 
+  /**
+   * @param {Object} event
+   */
   onKeyUp = event => {
     this.props.onKeyUp(event);
-    this.onScroll(event);
   };
 
   /**
@@ -306,7 +364,7 @@ class TextInput extends Component {
    */
   getCustomStyle() {
     return {
-      overflow: this.props.autoResize ? 'hidden' : 'auto',
+      overflow: this.props.overflow,
     };
   }
 
@@ -320,6 +378,9 @@ class TextInput extends Component {
    */
   blur = () => this.textarea.blur();
 
+  /**
+   * @returns {Object}
+   */
   render() {
     return (
       <textarea
@@ -344,6 +405,7 @@ class TextInput extends Component {
 class TextArea extends Component {
   static propTypes = {
     autoResize: PropTypes.bool,
+    autoResizeMaxHeight: PropTypes.number,
     value: PropTypes.string,
     suggestions: PropTypes.array,
     onEnter: PropTypes.func,
@@ -354,6 +416,7 @@ class TextArea extends Component {
    */
   static defaultProps = {
     autoResize: false,
+    autoResizeMaxHeight: 0,
     value: '',
     suggestions: [],
     onEnter: () => {},
@@ -373,6 +436,13 @@ class TextArea extends Component {
     mentions: [],
     height: undefined,
   };
+
+  componentWillUnmount() {
+    this.pre = null;
+    this.component = null;
+    this.textarea = null;
+    this.backdrop = null;
+  }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -443,26 +513,38 @@ class TextArea extends Component {
   /**
    * @param {Object} event
    */
-  onKeyUp = event => {
+  onKeyDown = event => {
     switch (event.keyCode) {
       case KEYS.ESC: {
         this.state.isMentionOpen && this.onMentionClose();
         break;
       }
       case KEYS.UP: {
-        this.state.isMentionOpen && this.updateActiveSuggestion(KEYS.UP);
+        if (this.state.isMentionOpen) {
+          event.preventDefault();
+          this.updateActiveSuggestion(KEYS.UP);
+        }
         break;
       }
       case KEYS.DOWN: {
-        this.state.isMentionOpen && this.updateActiveSuggestion(KEYS.DOWN);
+        if (this.state.isMentionOpen) {
+          event.preventDefault();
+          this.updateActiveSuggestion(KEYS.DOWN);
+        }
         break;
       }
       case KEYS.LEFT: {
-        this.state.isMentionOpen && this.onMentionClose();
+        if (this.state.isMentionOpen) {
+          event.preventDefault();
+          this.onMentionClose();
+        }
         break;
       }
       case KEYS.RIGHT: {
-        this.state.isMentionOpen && this.onMentionClose();
+        if (this.state.isMentionOpen) {
+          event.preventDefault();
+          this.onMentionClose();
+        }
         break;
       }
       default:
@@ -611,17 +693,63 @@ class TextArea extends Component {
     });
   }
 
+  /**
+   * @returns {Boolean}
+   */
+  isMaxHeightReached() {
+    if (
+      this.pre &&
+      this.props.autoResizeMaxHeight > 0 &&
+      this.props.autoResize
+    ) {
+      return this.props.autoResizeMaxHeight < this.pre.getHeight();
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * @returns {String}
+   */
+  getOverflow() {
+    if (this.props.autoResize) {
+      return this.isMaxHeightReached() ? 'auto' : 'hidden';
+    } else {
+      return 'auto';
+    }
+  }
+
+  /**
+   * @returns {Object}
+   */
+  getComputedStyle() {
+    if (this.isMaxHeightReached()) {
+      return {
+        height: `${this.props.autoResizeMaxHeight}px`,
+        maxHeight: `${this.props.autoResizeMaxHeight}px`,
+      };
+    } else {
+      return {};
+    }
+  }
+
   render() {
     return (
       <div
         ref={component => (this.component = component)}
         className="Mention-container"
+        style={this.getComputedStyle()}
       >
-        <ProxyPre isVisible={this.props.autoResize} value={this.state.value} />
-
+        <ProxyPre
+          ref={pre => (this.pre = pre)}
+          isVisible={this.props.autoResize}
+          isAbsolute={this.isMaxHeightReached()}
+          maxHeight={this.props.autoResizeMaxHeight}
+          value={this.state.value}
+        />
         <Backdrop
           ref={backdrop => (this.backdrop = backdrop)}
-          autoResize={this.props.autoResize}
+          overflow={this.getOverflow()}
         >
           <Highlighter
             value={this.state.value}
@@ -631,11 +759,11 @@ class TextArea extends Component {
 
         <TextInput
           ref={textarea => (this.textarea = textarea)}
-          autoResize={this.props.autoResize}
+          overflow={this.getOverflow()}
           onMention={this.onMention}
           onChange={this.onChange}
           onEnter={this.onEnter}
-          onKeyUp={this.onKeyUp}
+          onKeyDown={this.onKeyDown}
           onScroll={this.onScroll}
           onUpdateCoords={this.onUpdateCoords()}
           value={this.state.value}
