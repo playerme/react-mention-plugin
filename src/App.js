@@ -82,26 +82,50 @@ class App extends Component {
             {
               id: 1,
               avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
-              value: 'Fred_Smith',
-              label: 'Fred Smith',
+              value: 'Fred_Smithwet',
+              label: 'Fred Smithwetw',
             },
             {
               id: 2,
               avatar: 'https://randomuser.me/api/portraits/men/59.jpg',
-              value: 'Ronald_Horn',
-              label: 'Ronald Horn',
+              value: 'Ronald_Hornetw',
+              label: 'Ronald Horntwet',
             },
             {
               id: 3,
               avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
-              value: 'Joseph_Jones',
+              value: 'Joseph_Joneswetwt',
+              label: 'Joseph Joneswet',
+            },
+            {
+              id: 4,
+              avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
+              value: 'Kumar_Patel25235',
+              label: 'Kumar Pateltwt',
+            },
+            {
+              id: 1,
+              avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
+              value: 'Fred_Smith325252',
+              label: 'Fred Smith53252',
+            },
+            {
+              id: 2,
+              avatar: 'https://randomuser.me/api/portraits/men/59.jpg',
+              value: 'Ronald_Horn44',
+              label: 'Ronald Horn44',
+            },
+            {
+              id: 3,
+              avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
+              value: 'Joseph_Jones44',
               label: 'Joseph Jones',
             },
             {
               id: 4,
               avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
-              value: 'Kumar_Patel',
-              label: 'Kumar Patel',
+              value: 'Kumar_Patel2',
+              label: 'Kumar Patel4',
             },
           ]}
         />
