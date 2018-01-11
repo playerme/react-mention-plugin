@@ -8,20 +8,57 @@ A very simple, but awesome textarea component that allows you to "@mention" some
 
 `npn install react-mention-plugin --save`
 
-## Usage
+## Basic Usage
 
 ```
 import TextArea from 'react-mention-plugin';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <TextArea />
-      </div>
-    );
-  }
-}
+const suggestions = [
+  {
+    id: 1,
+    avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
+    value: 'Fred_Smith',
+    label: 'Fred Smith',
+  },
+  {
+    id: 2,
+    avatar: 'https://randomuser.me/api/portraits/men/59.jpg',
+    value: 'Ronald_Horn',
+    label: 'Ronald Horn',
+  },
+  {
+    id: 3,
+    avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
+    value: 'Joseph_Jones',
+    label: 'Joseph Jones',
+  },
+  {
+    id: 4,
+    avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
+    value: 'Kumar_Patel',
+    label: 'Kumar Patel',
+  },
+];
+
+// Basic usage. With scrollbar if overflows
+<TextArea suggestions={suggestions} />
+
+// Auto resize without height limit
+<TextArea suggestions={suggestions} autoResize/>
+
+// Auto resize with maximum height. When reaches the maximum height, scrollbar shows.
+<TextArea suggestions={suggestions} autoResize autoResizeMaxHeight={200} />
+
+
+// Public methods
+<TextArea ref={textarea => this.textarea = textarea} suggestions={suggestions} />
+
+# this.textarea.blur()
+# this.textarea.focus()
+# this.textarea.clearContent()
+# this.textarea.setContent()
+# this.textarea.openMention()
+# this.textarea.closeMention()
 ```
 
 ## Development
