@@ -1,6 +1,33 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import Popper from 'popper.js';
 
-export default class Suggestions extends PureComponent {
+export default class Suggestions extends Component {
+  /**
+   * Popup Element to used by popper
+   */
+  popEl = null;
+
+  /**
+   * PopperJS instance
+   */
+  popper = null;
+
+  /**
+   * Fake ref element
+   */
+  ref = {
+    getBoundingClientRect: () => ({
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      width: 0,
+      height: 0,
+    }),
+    clientWidth: 0,
+    clientHeight: 0,
+  };
+
   /**
    * @property {Object}
    */
@@ -13,20 +40,51 @@ export default class Suggestions extends PureComponent {
     options: [],
   };
 
-  /**
-   * Get the dynamic style of the component.
-   * Component is in absolute position relative to the Mention-container.
-   * Position offset gets updated when coords props get updated.
-   *
-   * @returns {Object}
-   */
-  getWrapperStyle() {
-    return {
-      display: this.props.isOpen ? 'block' : 'none',
-      position: 'absolute',
-      top: `${this.props.coords.top + 25}px`,
-      left: `${this.props.coords.left - 25}px`,
-    };
+  componentWillUnmount() {
+    this.popper && this.popper.destroy();
+    this.popper = null;
+  }
+
+  componentDidMount() {
+    this.initializePopper();
+  }
+
+  componentDidUpdate() {
+    this.popper && this.popper.scheduleUpdate();
+  }
+
+  initializePopper() {
+    this.popper = new Popper(this.ref, this.popEl, {
+      removeOnDestroy: true,
+      modifiers: {
+        computeStyle: {
+          enabled: true,
+          fn: data => {
+            console.log(this.props.coords);
+            return {
+              ...data,
+              styles: {
+                display: this.props.isOpen ? 'block' : 'none',
+                ...data.styles,
+                top:
+                  this.isVisible(data.instance.popper) && this.props.isOpen
+                    ? this.props.coords.top + 25
+                    : this.props.coords.top - data.popper.height,
+                left: this.props.coords.left - 25,
+              },
+            };
+          },
+        },
+      },
+    });
+  }
+
+  isVisible(elem) {
+    const bounding = elem.getBoundingClientRect();
+    return (
+      bounding.bottom <
+      (window.innerHeight || document.documentElement.clientWidth)
+    );
   }
 
   /**
@@ -55,7 +113,7 @@ export default class Suggestions extends PureComponent {
 
   render() {
     return (
-      <div style={this.getWrapperStyle()} className="Mention-suggestions">
+      <div ref={popEl => (this.popEl = popEl)} className="Mention-suggestions">
         <ul>
           {this.props.options.map((user, index) => (
             <li key={user.id}>
