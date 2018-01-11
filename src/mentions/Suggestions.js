@@ -1,6 +1,18 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import Popper from 'popper.js';
+import Travel from 'react-travel';
 
-export default class Suggestions extends PureComponent {
+export default class Suggestions extends Component {
+  /**
+   * Popup Element to used by popper
+   */
+  element = null;
+
+  /**
+   * PopperJS instance
+   */
+  popper = null;
+
   /**
    * @property {Object}
    */
@@ -13,20 +25,42 @@ export default class Suggestions extends PureComponent {
     options: [],
   };
 
+  componentWillUnmount() {
+    this.popper && this.popper.destroy();
+    this.popper = null;
+    this.element = null;
+    this.reference = null;
+  }
+
+  componentDidMount() {
+    this.initializePopper();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isOpen && this.popper) {
+      this.popper.scheduleUpdate();
+    }
+  }
+
+  componentWillUpdate() {
+    this.popper && this.popper.scheduleUpdate();
+  }
+
   /**
-   * Get the dynamic style of the component.
-   * Component is in absolute position relative to the Mention-container.
-   * Position offset gets updated when coords props get updated.
-   *
-   * @returns {Object}
+   * Initialize the instance of our popper
    */
-  getWrapperStyle() {
-    return {
-      display: this.props.isOpen ? 'block' : 'none',
-      position: 'absolute',
-      top: `${this.props.coords.top + 25}px`,
-      left: `${this.props.coords.left - 25}px`,
-    };
+  initializePopper() {
+    this.popper = new Popper(this.reference, this.element, {
+      placement: 'bottom-start',
+      removeOnDestroy: true,
+      modifiers: {
+        offset: { offset: '0,5' },
+        preventOverflow: {
+          enabled: true,
+          padding: 50,
+        },
+      },
+    });
   }
 
   /**
@@ -54,8 +88,25 @@ export default class Suggestions extends PureComponent {
   };
 
   render() {
-    return (
-      <div style={this.getWrapperStyle()} className="Mention-suggestions">
+    return [
+      <div
+        key="reference"
+        className="Mention-reference"
+        ref={reference => (this.reference = reference)}
+        style={{
+          top: this.props.coords.top,
+          left: this.props.coords.left,
+        }}
+      />,
+      <div
+        key="element"
+        ref={element => (this.element = element)}
+        className={
+          this.props.isOpen
+            ? 'Mention-suggestions Mention-suggestions--block'
+            : 'Mention-suggestions'
+        }
+      >
         <ul>
           {this.props.options.map((user, index) => (
             <li key={user.id}>
@@ -69,7 +120,7 @@ export default class Suggestions extends PureComponent {
             </li>
           ))}
         </ul>
-      </div>
-    );
+      </div>,
+    ];
   }
 }

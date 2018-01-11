@@ -77,14 +77,27 @@
 }
 
 .Mention-suggestions {
-  -moz-box-shadow: -1px 0 5px 1px rgba(0, 0, 0, .61);
-  -webkit-box-shadow: -1px 0 5px 1px rgba(0, 0, 0, .61);
   background-color: #fff;
   border: solid 1px #ccc;
-  box-shadow: -1px 0 5px 1px rgba(0, 0, 0, .61);
+  display: none;
   position: absolute;
   width: 200px;
   z-index: 3;
+}
+
+.Mention-reference {
+  height: 0;
+  position: absolute;
+  width: 0;
+  z-index: -1;
+}
+
+.Mention-suggestions--block {
+  display: block;
+}
+
+.Mention-suggestions[x-placement='bottom-start'] {
+  margin-top: 15px;
 }
 
 .Mention-suggestions > ul {

@@ -568,6 +568,8 @@ class TextArea extends Component {
    * @param {Object} event
    */
   onScroll = ({ scrollTop, scrollLeft }) => {
+    // Close the mention on scroll, so the its position will not go off.
+    this.onMentionClose();
     this.backdrop.scroll({ scrollTop, scrollLeft });
   };
 
@@ -581,7 +583,7 @@ class TextArea extends Component {
       this.setState({
         coords,
       });
-    }, 200);
+    }, 300);
   };
 
   /**
@@ -610,7 +612,6 @@ class TextArea extends Component {
    */
   onMentionClose = () => {
     this.setState({
-      coords: {},
       isMentionOpen: false,
     });
   };
