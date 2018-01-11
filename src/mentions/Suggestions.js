@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Popper from 'popper.js';
-import Travel from 'react-travel';
 
 export default class Suggestions extends Component {
   /**
