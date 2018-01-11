@@ -504,8 +504,11 @@ class TextArea extends Component {
     if (this.state.isMentionOpen) {
       event.preventDefault();
       this.selectMentionOnEnter();
-      return;
-    } else {
+    } else if (
+      (event.ctrlKey || event.metaKey) &&
+      (event.keyCode == 13 || event.keyCode == 10)
+    ) {
+      // Command ENTER or Control ENTER
       this.props.onEnter(this.state.value);
     }
   };
