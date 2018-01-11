@@ -85,6 +85,11 @@
   z-index: 3;
 }
 
+.Mention-suggestions[x-placement='bottom'] {
+  margin-left: 15px;
+  margin-top: 15px;
+}
+
 .Mention-suggestions > ul {
   list-style-type: none;
   margin: 0;

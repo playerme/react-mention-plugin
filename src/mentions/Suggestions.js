@@ -1,11 +1,34 @@
 import React, { Component } from 'react';
 import Popper from 'popper.js';
 
+class RangeRef {
+  rect = {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: 0,
+    height: 0,
+  };
+
+  getBoundingClientRect() {
+    return this.rect;
+  }
+
+  get clientWidth() {
+    return this.rect.width;
+  }
+
+  get clientHeight() {
+    return this.rect.height;
+  }
+}
+
 export default class Suggestions extends Component {
   /**
    * Popup Element to used by popper
    */
-  popEl = null;
+  element = null;
 
   /**
    * PopperJS instance
@@ -15,18 +38,7 @@ export default class Suggestions extends Component {
   /**
    * Fake ref element
    */
-  ref = {
-    getBoundingClientRect: () => ({
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      width: 0,
-      height: 0,
-    }),
-    clientWidth: 0,
-    clientHeight: 0,
-  };
+  reference = new RangeRef();
 
   /**
    * @property {Object}
@@ -49,42 +61,31 @@ export default class Suggestions extends Component {
     this.initializePopper();
   }
 
-  componentDidUpdate() {
-    this.popper && this.popper.scheduleUpdate();
+  componentWillUpdate() {
+    this.popper && this.popper.update();
   }
 
   initializePopper() {
-    this.popper = new Popper(this.ref, this.popEl, {
+    this.popper = new Popper(this.reference, this.element, {
+      placement: 'bottom',
       removeOnDestroy: true,
       modifiers: {
-        computeStyle: {
+        offset: { offset: '0,5' },
+        showPopup: {
           enabled: true,
           fn: data => {
-            console.log(this.props.coords);
             return {
               ...data,
               styles: {
-                display: this.props.isOpen ? 'block' : 'none',
                 ...data.styles,
-                top:
-                  this.isVisible(data.instance.popper) && this.props.isOpen
-                    ? this.props.coords.top + 25
-                    : this.props.coords.top - data.popper.height,
-                left: this.props.coords.left - 25,
+                display: this.props.isOpen ? 'block' : 'none',
+                left: this.props.coords.left,
               },
             };
           },
         },
       },
     });
-  }
-
-  isVisible(elem) {
-    const bounding = elem.getBoundingClientRect();
-    return (
-      bounding.bottom <
-      (window.innerHeight || document.documentElement.clientWidth)
-    );
   }
 
   /**
@@ -113,7 +114,10 @@ export default class Suggestions extends Component {
 
   render() {
     return (
-      <div ref={popEl => (this.popEl = popEl)} className="Mention-suggestions">
+      <div
+        ref={element => (this.element = element)}
+        className="Mention-suggestions"
+      >
         <ul>
           {this.props.options.map((user, index) => (
             <li key={user.id}>
