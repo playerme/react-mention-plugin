@@ -580,7 +580,7 @@ class TextArea extends Component {
       this.setState({
         coords,
       });
-    }, 200);
+    }, 300);
   };
 
   /**
@@ -609,7 +609,6 @@ class TextArea extends Component {
    */
   onMentionClose = () => {
     this.setState({
-      coords: {},
       isMentionOpen: false,
     });
   };

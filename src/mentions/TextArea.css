@@ -85,8 +85,18 @@
   z-index: 3;
 }
 
-.Mention-suggestions[x-placement='bottom'] {
-  margin-left: 15px;
+.Mention-reference {
+  height: 0;
+  position: absolute;
+  width: 0;
+  z-index: -1;
+}
+
+.Mention-suggestions--block {
+  display: block;
+}
+
+.Mention-suggestions[x-placement='bottom-start'] {
   margin-top: 15px;
 }
 

@@ -1,28 +1,6 @@
 import React, { Component } from 'react';
 import Popper from 'popper.js';
-
-class RangeRef {
-  rect = {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: 0,
-    height: 0,
-  };
-
-  getBoundingClientRect() {
-    return this.rect;
-  }
-
-  get clientWidth() {
-    return this.rect.width;
-  }
-
-  get clientHeight() {
-    return this.rect.height;
-  }
-}
+import Travel from 'react-travel';
 
 export default class Suggestions extends Component {
   /**
@@ -34,11 +12,6 @@ export default class Suggestions extends Component {
    * PopperJS instance
    */
   popper = null;
-
-  /**
-   * Fake ref element
-   */
-  reference = new RangeRef();
 
   /**
    * @property {Object}
@@ -55,34 +28,36 @@ export default class Suggestions extends Component {
   componentWillUnmount() {
     this.popper && this.popper.destroy();
     this.popper = null;
+    this.element = null;
+    this.reference = null;
   }
 
   componentDidMount() {
     this.initializePopper();
   }
 
-  componentWillUpdate() {
-    this.popper && this.popper.update();
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isOpen && this.popper) {
+      this.popper.scheduleUpdate();
+    }
   }
 
+  componentWillUpdate() {
+    this.popper && this.popper.scheduleUpdate();
+  }
+
+  /**
+   * Initialize the instance of our popper
+   */
   initializePopper() {
     this.popper = new Popper(this.reference, this.element, {
-      placement: 'bottom',
+      placement: 'bottom-start',
       removeOnDestroy: true,
       modifiers: {
         offset: { offset: '0,5' },
-        showPopup: {
+        preventOverflow: {
           enabled: true,
-          fn: data => {
-            return {
-              ...data,
-              styles: {
-                ...data.styles,
-                display: this.props.isOpen ? 'block' : 'none',
-                left: this.props.coords.left,
-              },
-            };
-          },
+          padding: 50,
         },
       },
     });
@@ -113,10 +88,24 @@ export default class Suggestions extends Component {
   };
 
   render() {
-    return (
+    return [
       <div
+        key="reference"
+        className="Mention-reference"
+        ref={reference => (this.reference = reference)}
+        style={{
+          top: this.props.coords.top,
+          left: this.props.coords.left,
+        }}
+      />,
+      <div
+        key="element"
         ref={element => (this.element = element)}
-        className="Mention-suggestions"
+        className={
+          this.props.isOpen
+            ? 'Mention-suggestions Mention-suggestions--block'
+            : 'Mention-suggestions'
+        }
       >
         <ul>
           {this.props.options.map((user, index) => (
@@ -131,7 +120,7 @@ export default class Suggestions extends Component {
             </li>
           ))}
         </ul>
-      </div>
-    );
+      </div>,
+    ];
   }
 }

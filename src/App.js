@@ -43,25 +43,25 @@ class App extends Component {
           autoResize={true}
           suggestions={[
             {
-              id: 1,
+              id: 15,
               avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
               value: 'Fred_Smith',
               label: 'Fred Smith',
             },
             {
-              id: 2,
+              id: 25,
               avatar: 'https://randomuser.me/api/portraits/men/59.jpg',
               value: 'Ronald_Horn',
               label: 'Ronald Horn',
             },
             {
-              id: 3,
+              id: 35,
               avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
               value: 'Joseph_Jones',
               label: 'Joseph Jones',
             },
             {
-              id: 4,
+              id: 45,
               avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
               value: 'Kumar_Patel',
               label: 'Kumar Patel',
@@ -104,25 +104,25 @@ class App extends Component {
               label: 'Kumar Pateltwt',
             },
             {
-              id: 1,
+              id: 14,
               avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
               value: 'Fred_Smith325252',
               label: 'Fred Smith53252',
             },
             {
-              id: 2,
+              id: 24,
               avatar: 'https://randomuser.me/api/portraits/men/59.jpg',
               value: 'Ronald_Horn44',
               label: 'Ronald Horn44',
             },
             {
-              id: 3,
+              id: 34,
               avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
               value: 'Joseph_Jones44',
               label: 'Joseph Jones',
             },
             {
-              id: 4,
+              id: 44,
               avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
               value: 'Kumar_Patel2',
               label: 'Kumar Patel4',
