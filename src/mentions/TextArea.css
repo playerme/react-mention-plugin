@@ -93,8 +93,8 @@
 }
 
 .Mention-suggestions--block {
-  -webkit-animation: fadeIn .3s;
-  animation: fadeIn .3s;
+  -webkit-animation: fadeIn .4s;
+  animation: fadeIn .4s;
   visibility: visible;
 }
 
