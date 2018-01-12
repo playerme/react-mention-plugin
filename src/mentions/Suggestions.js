@@ -88,7 +88,7 @@ export default class Suggestions extends Component {
 
   render() {
     return [
-      <div
+      <span
         key="reference"
         className="Mention-reference"
         ref={reference => (this.reference = reference)}
