@@ -76,15 +76,6 @@
   color: transparent;
 }
 
-.Mention-suggestions {
-  background-color: #fff;
-  border: solid 1px #ccc;
-  display: none;
-  position: absolute;
-  width: 200px;
-  z-index: 3;
-}
-
 .Mention-reference {
   height: 0;
   position: absolute;
@@ -92,8 +83,36 @@
   z-index: -1;
 }
 
+.Mention-suggestions {
+  background-color: #fff;
+  border: solid 1px #ccc;
+  position: absolute;
+  visibility: hidden;
+  width: 200px;
+  z-index: 3;
+}
+
 .Mention-suggestions--block {
-  display: block;
+  -webkit-animation: fadeIn .3s;
+  animation: fadeIn .3s;
+  visibility: visible;
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .Mention-suggestions[x-placement='bottom-start'] {

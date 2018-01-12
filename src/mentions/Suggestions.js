@@ -1,6 +1,31 @@
 import React, { Component } from 'react';
 import Popper from 'popper.js';
 
+/**
+ * @param {Number} active
+ * @param {Array} options
+ * @param {Function} onCLick
+ *
+ * @returns {Object}
+ */
+const UserList = ({ active, options, onClick }) => {
+  return (
+    <ul>
+      {options.map((user, index) => (
+        <li key={user.id}>
+          <a
+            className={active === index ? 'active' : ''}
+            href="/"
+            onClick={onClick(user, index)}
+          >
+            {user.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
 export default class Suggestions extends Component {
   /**
    * Popup Element to used by popper
@@ -72,17 +97,6 @@ export default class Suggestions extends Component {
   }
 
   /**
-   * Handles active class name toggling.
-   *
-   * @param {Number} index
-   *
-   * @returns {String}
-   */
-  getClassName(index) {
-    return index === this.props.active ? 'active ' : '';
-  }
-
-  /**
    * Curry to onClick function in order to pass user object.
    *
    * @returns {Function}
@@ -111,19 +125,11 @@ export default class Suggestions extends Component {
         ref={element => (this.element = element)}
         className={this.getElementClass()}
       >
-        <ul>
-          {this.props.options.map((user, index) => (
-            <li key={user.id}>
-              <a
-                className={this.getClassName(index)}
-                href="/"
-                onClick={this.onClick(user, index)}
-              >
-                {user.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <UserList
+          active={this.props.active}
+          options={this.props.options}
+          onClick={this.onClick}
+        />
       </div>,
     ];
   }

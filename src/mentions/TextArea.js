@@ -409,6 +409,7 @@ class TextArea extends Component {
     value: PropTypes.string,
     suggestions: PropTypes.array,
     onEnter: PropTypes.func,
+    onActivated: PropTypes.func,
   };
 
   /**
@@ -420,6 +421,7 @@ class TextArea extends Component {
     value: '',
     suggestions: [],
     onEnter: () => {},
+    onActivated: () => {},
   };
 
   /**
@@ -429,6 +431,7 @@ class TextArea extends Component {
     activeSuggestion: 0,
     value: '',
     isMentionOpen: false,
+    isActivated: false,
     coords: {
       top: 0,
       left: 0,
@@ -601,10 +604,15 @@ class TextArea extends Component {
    * @returns {void}
    */
   onMentionOpen = () => {
-    this.setState({
-      activeSuggestion: 0,
-      isMentionOpen: true,
-    });
+    this.setState(
+      {
+        activeSuggestion: 0,
+        isMentionOpen: true,
+      },
+      () => {
+        this.activate();
+      }
+    );
   };
 
   /**
@@ -737,6 +745,22 @@ class TextArea extends Component {
     }
   }
 
+  /**
+   * We only use certain components e.g
+   * If we start using the textarea on click.
+   * So we can avoid mounting alot of components upfront.
+   */
+  activate = () => {
+    this.setState(
+      {
+        isActivated: true,
+      },
+      () => {
+        this.props.onActivated();
+      }
+    );
+  };
+
   render() {
     return (
       <div
@@ -751,6 +775,7 @@ class TextArea extends Component {
           maxHeight={this.props.autoResizeMaxHeight}
           value={this.state.value}
         />
+
         <Backdrop
           ref={backdrop => (this.backdrop = backdrop)}
           overflow={this.getOverflow()}
@@ -773,13 +798,15 @@ class TextArea extends Component {
           value={this.state.value}
         />
 
-        <Suggestions
-          active={this.state.activeSuggestion}
-          isOpen={this.state.isMentionOpen}
-          coords={this.state.coords}
-          options={this.props.suggestions}
-          onSelect={this.onMentionSelect}
-        />
+        {this.state.isActivated && (
+          <Suggestions
+            active={this.state.activeSuggestion}
+            isOpen={this.state.isMentionOpen}
+            coords={this.state.coords}
+            options={this.props.suggestions}
+            onSelect={this.onMentionSelect}
+          />
+        )}
       </div>
     );
   }
