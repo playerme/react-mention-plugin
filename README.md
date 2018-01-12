@@ -55,10 +55,17 @@ const suggestions = [
 
 # this.textarea.blur()
 # this.textarea.focus()
-# this.textarea.clearContent()
-# this.textarea.setContent()
+# this.textarea.clearValue()
+# this.textarea.setValue()
 # this.textarea.openMention()
 # this.textarea.closeMention()
+
+
+// Events
+onSubmit - CTRL + ENTER or CMD + ENTER on mac.
+onChange - When value changes.
+onActivated - When mention suggestion gets activated.
+onSearch - When trying to suggest. Call an API or filter existing data.
 ```
 
 ## Development

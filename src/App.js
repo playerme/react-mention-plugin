@@ -128,6 +128,9 @@ class App extends Component {
               label: 'Kumar Patel4',
             },
           ]}
+          onSubmit={(event, value) => {
+            console.log(value);
+          }}
         />
       </div>
     );

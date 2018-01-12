@@ -338,11 +338,7 @@ class TextInput extends Component {
    * @param {Object} event
    */
   onKeyPress = event => {
-    if (event.keyCode === KEYS.RETURN || event.which === KEYS.RETURN) {
-      this.props.onEnter(event);
-    } else {
-      this.props.onKeyPress(event);
-    }
+    this.props.onKeyPress(event);
   };
 
   /**
@@ -408,8 +404,10 @@ class TextArea extends Component {
     autoResizeMaxHeight: PropTypes.number,
     value: PropTypes.string,
     suggestions: PropTypes.array,
-    onEnter: PropTypes.func,
+    onChange: PropTypes.func,
+    onSubmit: PropTypes.func,
     onActivated: PropTypes.func,
+    onSearch: PropTypes.func,
   };
 
   /**
@@ -420,8 +418,10 @@ class TextArea extends Component {
     autoResizeMaxHeight: 0,
     value: '',
     suggestions: [],
-    onEnter: () => {},
+    onSubmit: () => {},
+    onChange: () => {},
     onActivated: () => {},
+    onSearch: () => {},
   };
 
   /**
@@ -454,12 +454,12 @@ class TextArea extends Component {
   }
 
   /**
-   * Closes mention suggestions
+   * @returns {void}
    */
   closeMention = () => this.onMentionClose();
 
   /**
-   * Opens mention suggestions
+   * @returns {void}
    */
   openMention = () => this.onMentionOpen();
 
@@ -469,25 +469,19 @@ class TextArea extends Component {
   focus = () => this.textarea.focus();
 
   /**
-   * Out focus on the textarea
+   * @returns {void}
    */
   blur = () => this.textarea.blur();
 
   /**
-   * Clears the contents
+   * @returns {void}
    */
-  clearContent = () => {
-    this.setState({
-      value: '',
-    });
-  };
+  clearValue = () => this.setState({ value: '' });
 
   /**
    * @param {String} value
    */
-  setContent = value => {
-    this.setState({ value });
-  };
+  setValue = value => this.setState({ value });
 
   /**
    * Handles click outside event for closing suggestions component.
@@ -507,13 +501,14 @@ class TextArea extends Component {
     if (this.state.isMentionOpen) {
       event.preventDefault();
       this.selectMentionOnEnter();
-    } else if (
-      (event.ctrlKey || event.metaKey) &&
-      (event.keyCode === 13 || event.keyCode === 10)
-    ) {
-      // Command ENTER or Control ENTER
-      this.props.onEnter(this.state.value);
+      return;
     }
+
+    if (event.ctrlKey || event.metaKey) {
+      this.props.onSubmit(event, this.state.value);
+    }
+
+    if (event.shiftKey) return;
   };
 
   /**
@@ -521,30 +516,34 @@ class TextArea extends Component {
    */
   onKeyDown = event => {
     switch (event.keyCode) {
+      case KEYS.RETURN: {
+        this.onEnter(event);
+        return;
+      }
       case KEYS.ESC: {
         this.state.isMentionOpen && this.onMentionClose();
-        break;
+        return;
       }
       case KEYS.UP: {
         if (this.state.isMentionOpen) {
           event.preventDefault();
           this.updateActiveSuggestion(KEYS.UP);
         }
-        break;
+        return;
       }
       case KEYS.DOWN: {
         if (this.state.isMentionOpen) {
           event.preventDefault();
           this.updateActiveSuggestion(KEYS.DOWN);
         }
-        break;
+        return;
       }
       case KEYS.LEFT: {
         if (this.state.isMentionOpen) {
           event.preventDefault();
           this.onMentionClose();
         }
-        break;
+        return;
       }
       case KEYS.RIGHT: {
         if (this.state.isMentionOpen) {
@@ -562,22 +561,30 @@ class TextArea extends Component {
    * @param {String} value
    */
   onChange = value => {
-    this.setState({
-      value,
-    });
+    this.setState(
+      {
+        value,
+      },
+      () => {
+        this.props.onChange(value);
+      }
+    );
   };
 
   /**
+   * Scroll event handler syncs the scroll values of the backdrop and the textarea.
+   * Close the mention on scroll, so the its position will not go off.
+   *
    * @param {Object} event
    */
   onScroll = ({ scrollTop, scrollLeft }) => {
-    // Close the mention on scroll, so the its position will not go off.
     this.onMentionClose();
     this.backdrop.scroll({ scrollTop, scrollLeft });
   };
 
   /**
-   * Update coords state with debounce.
+   * Updates the coordinates in the state to be used
+   * for positioning our mention suggestion.
    *
    * @returns {Function}
    */
@@ -591,12 +598,15 @@ class TextArea extends Component {
 
   /**
    * @param {String} mention
+   *
+   * @returns {void}
    */
   onMention = mention => {
     if (!mention) {
       this.onMentionClose();
     } else {
       this.onMentionOpen();
+      this.props.onSearch(mention);
     }
   };
 
@@ -670,7 +680,7 @@ class TextArea extends Component {
   }
 
   /**
-   * Handles changing of active mention suggestion.
+   * Handles changing of active(highlighted) mentions item.
    * If the next active go over the length of the
    * suggestions, Well back to zero. Lesser than zero
    * well go to the last item.
