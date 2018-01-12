@@ -63,6 +63,15 @@ export default class Suggestions extends Component {
   }
 
   /**
+   * @returns {String}
+   */
+  getElementClass() {
+    return this.props.isOpen
+      ? 'Mention-suggestions Mention-suggestions--block'
+      : 'Mention-suggestions';
+  }
+
+  /**
    * Handles active class name toggling.
    *
    * @param {Number} index
@@ -100,11 +109,7 @@ export default class Suggestions extends Component {
       <div
         key="element"
         ref={element => (this.element = element)}
-        className={
-          this.props.isOpen
-            ? 'Mention-suggestions Mention-suggestions--block'
-            : 'Mention-suggestions'
-        }
+        className={this.getElementClass()}
       >
         <ul>
           {this.props.options.map((user, index) => (
