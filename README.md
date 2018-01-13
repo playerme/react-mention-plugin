@@ -43,6 +43,9 @@ const suggestions = [
 // Basic usage. With scrollbar if overflows
 <TextArea suggestions={suggestions} />
 
+// Basic usage. @ is the default trigger but you can also use #
+<TextArea suggestions={suggestions} trigger="#" />
+
 // Auto resize without height limit
 <TextArea suggestions={suggestions} autoResize/>
 

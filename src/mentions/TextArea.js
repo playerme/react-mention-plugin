@@ -84,6 +84,7 @@ class Highlighter extends Component {
    * @property {Object} propTypes
    */
   static defaultProps = {
+    trigger: '@',
     value: '',
     mentions: [],
   };
@@ -92,6 +93,7 @@ class Highlighter extends Component {
    * @property {Object} propTypes
    */
   static propTypes = {
+    trigger: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     mentions: PropTypes.array.isRequired,
   };
@@ -102,7 +104,7 @@ class Highlighter extends Component {
    */
   getHtmlValue(value, mentions = []) {
     return value
-      .split(/(@\w+)/g)
+      .split(new RegExp(`(${this.props.trigger}\\w+)`, 'g'))
       .map((str, key) => {
         if (mentions.indexOf(str) !== -1) {
           return (
@@ -183,6 +185,7 @@ class TextInput extends Component {
    * @property {Object} propTypes
    */
   static defaultProps = {
+    trigger: PropTypes.string,
     overflow: PropTypes.bool,
     onChange: PropTypes.func,
     onUpdateCoords: PropTypes.func,
@@ -199,6 +202,7 @@ class TextInput extends Component {
    * @property {Object} defaultProps
    */
   static defaultProps = {
+    trigger: '@',
     overflow: 'auto',
     onChange: () => {},
     onUpdateCoords: () => {},
@@ -225,7 +229,9 @@ class TextInput extends Component {
 
     const mentioned = this.getLastWord(event.target);
 
-    const isMatched = /(@\w+)/g.test(mentioned);
+    const isMatched = new RegExp(`(${this.props.trigger}\\w+)`, 'g').test(
+      mentioned
+    );
 
     if (mentioned && mentioned.length > 3 && isMatched) {
       this.props.onMention(mentioned);
@@ -296,19 +302,29 @@ class TextInput extends Component {
   }
 
   /**
+   * Replace mention with the suggested value.
+   * Notice we add a space at the end.
+   *
    * @param {String} value
+   *
+   * @returns {String}
    */
   replaceText(value) {
     const currentPosition = this.getCaretPosition(this.textarea);
     const prevText = this.props.value.substring(0, currentPosition);
 
-    const textPart1 = prevText.substring(0, prevText.lastIndexOf('@'));
+    const textPart1 = prevText.substring(
+      0,
+      prevText.lastIndexOf(this.props.trigger)
+    );
     const textPart2 = this.props.value.substring(
       currentPosition,
       this.props.value.length
     );
 
-    return this.props.onChange(`${textPart1}@${value}${textPart2} `);
+    return this.props.onChange(
+      `${textPart1}${this.props.trigger}${value}${textPart2} `
+    );
   }
 
   /**
@@ -336,6 +352,8 @@ class TextInput extends Component {
 
   /**
    * @param {Object} event
+   *
+   * @returns {void}
    */
   onKeyPress = event => {
     this.props.onKeyPress(event);
@@ -343,6 +361,8 @@ class TextInput extends Component {
 
   /**
    * @param {Object} event
+   *
+   * @returns {void}
    */
   onKeyDown = event => {
     this.props.onKeyDown(event);
@@ -350,6 +370,8 @@ class TextInput extends Component {
 
   /**
    * @param {Object} event
+   *
+   * @returns {void}
    */
   onKeyUp = event => {
     this.props.onKeyUp(event);
@@ -357,6 +379,8 @@ class TextInput extends Component {
 
   /**
    * @returns {Object}
+   *
+   * @returns {void}
    */
   getCustomStyle() {
     return {
@@ -793,6 +817,7 @@ class TextArea extends Component {
           <Highlighter
             value={this.state.value}
             mentions={this.state.mentions}
+            trigger={this.props.trigger}
           />
         </Backdrop>
 
@@ -806,6 +831,7 @@ class TextArea extends Component {
           onScroll={this.onScroll}
           onUpdateCoords={this.onUpdateCoords()}
           value={this.state.value}
+          trigger={this.props.trigger}
         />
 
         {this.state.isActivated && (

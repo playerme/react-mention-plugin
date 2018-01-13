@@ -37,6 +37,38 @@ class App extends Component {
             },
           ]}
         />
+
+        <h1>Custom Trigger</h1>
+        <p>By default we use @ sign but you can also use # for hash tag.</p>
+        <TextArea
+          trigger="#"
+          suggestions={[
+            {
+              id: 1,
+              avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
+              value: 'Fred_Smith',
+              label: 'Fred Smith',
+            },
+            {
+              id: 2,
+              avatar: 'https://randomuser.me/api/portraits/men/59.jpg',
+              value: 'Ronald_Horn',
+              label: 'Ronald Horn',
+            },
+            {
+              id: 3,
+              avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
+              value: 'Joseph_Jones',
+              label: 'Joseph Jones',
+            },
+            {
+              id: 4,
+              avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
+              value: 'Kumar_Patel',
+              label: 'Kumar Patel',
+            },
+          ]}
+        />
         <h1>Auto Resize</h1>
         <pre>autoResize=true</pre>
         <TextArea
