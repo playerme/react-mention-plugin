@@ -8,17 +8,17 @@ import Popper from 'popper.js';
  *
  * @returns {Object}
  */
-const UserList = ({ active, options, onClick }) => {
+const MentionItems = ({ active, options, onClick }) => {
   return (
     <ul>
-      {options.map((user, index) => (
-        <li key={user.id}>
+      {options.map((item, index) => (
+        <li key={item.id}>
           <a
             className={active === index ? 'active' : ''}
             href="/"
-            onClick={onClick(user, index)}
+            onClick={onClick(item, index)}
           >
-            {user.label}
+            {item.label}
           </a>
         </li>
       ))}
@@ -97,15 +97,15 @@ export default class Suggestions extends Component {
   }
 
   /**
-   * Curry to onClick function in order to pass user object.
+   * Curry to onClick function in order to pass item object.
    *
    * @returns {Function}
    */
-  onClick = (user, index) => {
+  onClick = (item, index) => {
     const self = this;
     return function(event) {
       event.preventDefault();
-      self.props.onSelect(event, user, index);
+      self.props.onSelect(event, item, index);
     };
   };
 
@@ -125,7 +125,7 @@ export default class Suggestions extends Component {
         ref={element => (this.element = element)}
         className={this.getElementClass()}
       >
-        <UserList
+        <MentionItems
           active={this.props.active}
           options={this.props.options}
           onClick={this.onClick}
