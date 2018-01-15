@@ -1,4 +1,5 @@
 var path = require('path');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: './src/mentions/index.js',
@@ -23,8 +24,13 @@ module.exports = {
       },
       {
         test: /\.(scss|css)$/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader'],
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          //resolve-url-loader may be chained before sass-loader if necessary
+          use: ['css-loader', 'sass-loader'],
+        }),
       },
     ],
   },
+  plugins: [new ExtractTextPlugin('TextArea.css')],
 };

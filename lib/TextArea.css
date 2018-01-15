@@ -1,0 +1,119 @@
+.Mention-container, .Mention-backdrop, .Mention-textarea {
+  color: inherit;
+  height: 100%;
+  min-height: 100px;
+  width: 100%; }
+
+.Mention-highlights, .Mention-textarea, .Mention-proxy {
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+  padding: 0; }
+
+.Mention-container {
+  border: solid 1px #ccc;
+  display: block;
+  position: relative;
+  -webkit-text-size-adjust: none; }
+
+.Mention-backdrop {
+  background-color: transparent;
+  border: none;
+  left: 0;
+  overflow: auto;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  -webkit-appearance: textarea;
+  -moz-appearance: textfield-multiline; }
+
+.Mention-highlights {
+  color: transparent;
+  white-space: pre-wrap;
+  word-wrap: break-word; }
+
+.Mention-proxy {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  background: transparent;
+  border: none;
+  box-sizing: border-box;
+  color: transparent;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  z-index: -1; }
+
+.Mention-textarea {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-sizing: border-box;
+  display: block;
+  left: 0;
+  margin: 0;
+  overflow: auto;
+  position: absolute;
+  resize: none;
+  top: 0;
+  z-index: 2;
+  -ms-box-sizing: border-box; }
+
+.Mention-mark {
+  background-color: #b1d5e5;
+  color: transparent; }
+
+.Mention-reference {
+  height: 0;
+  position: absolute;
+  width: 0;
+  z-index: -1; }
+
+.Mention-suggestions {
+  background-color: #fff;
+  border: solid 1px #ccc;
+  position: absolute;
+  visibility: hidden;
+  width: 200px;
+  z-index: 3; }
+
+.Mention-suggestions--block {
+  -webkit-animation: fadeIn .4s;
+  animation: fadeIn .4s;
+  visibility: visible; }
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
+.Mention-suggestions[x-placement='bottom-start'] {
+  margin-top: 15px; }
+
+.Mention-suggestions > ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
+
+.Mention-suggestions > ul > li > a {
+  border-bottom: solid 1px #ccc;
+  color: inherit;
+  display: block;
+  font-size: .9em;
+  padding: 10px 10px 10px 10px;
+  text-decoration: none; }
+
+.Mention-suggestions > ul > li:last-child > a {
+  border-bottom: none; }
+
+.Mention-suggestions > ul > li > a.active {
+  background-color: #ccc; }

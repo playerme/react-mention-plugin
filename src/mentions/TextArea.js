@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import Suggestions from './Suggestions';
 import getCoordinates from './getCoordinates';
 
+import './TextArea.css';
+
 const KEYS = {
   TAB: 9,
   RETURN: 13,
