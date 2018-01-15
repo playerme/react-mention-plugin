@@ -19,22 +19,6 @@ const KEYS = {
 
 class ProxyPre extends Component {
   /**
-   * @property {Object} propTypes
-   */
-  static defaultProps = {
-    value: '',
-    isVisible: false,
-  };
-
-  /**
-   * @property {Object} propTypes
-   */
-  static propTypes = {
-    value: PropTypes.string,
-    isVisible: PropTypes.bool,
-  };
-
-  /**
    * @returns {Number}
    */
   getHeight = () => {
@@ -79,25 +63,17 @@ class ProxyPre extends Component {
   }
 }
 
+ProxyPre.defaultProps = {
+  value: '',
+  isVisible: false,
+};
+
+ProxyPre.propTypes = {
+  value: PropTypes.string,
+  isVisible: PropTypes.bool,
+};
+
 class Highlighter extends Component {
-  /**
-   * @property {Object} propTypes
-   */
-  static defaultProps = {
-    trigger: '@',
-    value: '',
-    mentions: [],
-  };
-
-  /**
-   * @property {Object} propTypes
-   */
-  static propTypes = {
-    trigger: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    mentions: PropTypes.array.isRequired,
-  };
-
   /**
    * @param {Array|null} value
    * @param {Array} mentions
@@ -131,22 +107,19 @@ class Highlighter extends Component {
   }
 }
 
+Highlighter.defaultProps = {
+  trigger: '@',
+  value: '',
+  mentions: [],
+};
+
+Highlighter.propTypes = {
+  trigger: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  mentions: PropTypes.array.isRequired,
+};
+
 class Backdrop extends Component {
-  /**
-   * @property {Object} propTypes
-   */
-  static propTypes = {
-    overflow: PropTypes.string,
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]).isRequired,
-  };
-
-  static defaultProps = {
-    overflow: 'auto',
-  };
-
   componentWillUnmount() {
     this.backdrop = null;
   }
@@ -180,41 +153,19 @@ class Backdrop extends Component {
   }
 }
 
+Backdrop.propTypes = {
+  overflow: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+};
+
+Backdrop.defaultProps = {
+  overflow: 'auto',
+};
+
 class TextInput extends Component {
-  /**
-   * @property {Object} propTypes
-   */
-  static defaultProps = {
-    trigger: PropTypes.string,
-    overflow: PropTypes.bool,
-    onChange: PropTypes.func,
-    onUpdateCoords: PropTypes.func,
-    onMention: PropTypes.func,
-    onScroll: PropTypes.func,
-    onKeyUp: PropTypes.func,
-    onKeyPress: PropTypes.func,
-    onKeyDown: PropTypes.func,
-    onEnter: PropTypes.func,
-    value: PropTypes.func,
-  };
-
-  /**
-   * @property {Object} defaultProps
-   */
-  static defaultProps = {
-    trigger: '@',
-    overflow: 'auto',
-    onChange: () => {},
-    onUpdateCoords: () => {},
-    onMention: () => {},
-    onScroll: () => {},
-    onKeyUp: () => {},
-    onKeyPress: () => {},
-    onKeyDown: () => {},
-    onEnter: () => {},
-    value: () => {},
-  };
-
   componentWillUnmount() {
     this.textarea = null;
   }
@@ -422,32 +373,35 @@ class TextInput extends Component {
   }
 }
 
+TextInput.defaultProps = {
+  trigger: PropTypes.string,
+  overflow: PropTypes.bool,
+  onChange: PropTypes.func,
+  onUpdateCoords: PropTypes.func,
+  onMention: PropTypes.func,
+  onScroll: PropTypes.func,
+  onKeyUp: PropTypes.func,
+  onKeyPress: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  onEnter: PropTypes.func,
+  value: PropTypes.func,
+};
+
+TextInput.defaultProps = {
+  trigger: '@',
+  overflow: 'auto',
+  onChange: () => {},
+  onUpdateCoords: () => {},
+  onMention: () => {},
+  onScroll: () => {},
+  onKeyUp: () => {},
+  onKeyPress: () => {},
+  onKeyDown: () => {},
+  onEnter: () => {},
+  value: () => {},
+};
+
 class TextArea extends Component {
-  static propTypes = {
-    autoResize: PropTypes.bool,
-    autoResizeMaxHeight: PropTypes.number,
-    value: PropTypes.string,
-    suggestions: PropTypes.array,
-    onChange: PropTypes.func,
-    onSubmit: PropTypes.func,
-    onActivated: PropTypes.func,
-    onSearch: PropTypes.func,
-  };
-
-  /**
-   * @property {Object} defaultProps
-   */
-  static defaultProps = {
-    autoResize: false,
-    autoResizeMaxHeight: 0,
-    value: '',
-    suggestions: [],
-    onSubmit: () => {},
-    onChange: () => {},
-    onActivated: () => {},
-    onSearch: () => {},
-  };
-
   /**
    * @property {Object} state
    */
@@ -847,5 +801,27 @@ class TextArea extends Component {
     );
   }
 }
+
+TextArea.propTypes = {
+  autoResize: PropTypes.bool,
+  autoResizeMaxHeight: PropTypes.number,
+  value: PropTypes.string,
+  suggestions: PropTypes.array,
+  onChange: PropTypes.func,
+  onSubmit: PropTypes.func,
+  onActivated: PropTypes.func,
+  onSearch: PropTypes.func,
+};
+
+TextArea.defaultProps = {
+  autoResize: false,
+  autoResizeMaxHeight: 0,
+  value: '',
+  suggestions: [],
+  onSubmit: () => {},
+  onChange: () => {},
+  onActivated: () => {},
+  onSearch: () => {},
+};
 
 export default onClickOutside(TextArea);
