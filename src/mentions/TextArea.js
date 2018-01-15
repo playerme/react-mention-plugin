@@ -118,7 +118,7 @@ Highlighter.defaultProps = {
 };
 
 Highlighter.propTypes = {
-  trigger: PropTypes.string.isRequired,
+  trigger: PropTypes.oneOf(['@', '#']),
   value: PropTypes.string.isRequired,
   mentions: PropTypes.array.isRequired,
 };
@@ -639,7 +639,7 @@ class TextArea extends Component {
   onAddMention(value) {
     this.setState(
       {
-        mentions: this.state.mentions.concat([`@${value}`]),
+        mentions: this.state.mentions.concat([`${this.props.trigger}${value}`]),
       },
       () => {
         this.textarea.focus();
@@ -815,7 +815,7 @@ TextArea.propTypes = {
   onSubmit: PropTypes.func,
   onActivated: PropTypes.func,
   onSearch: PropTypes.func,
-  trigger: PropTypes.string,
+  trigger: PropTypes.oneOf(['@', '#']),
 };
 
 TextArea.defaultProps = {
