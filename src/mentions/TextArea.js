@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import debounce from 'lodash/debounce';
 import onClickOutside from 'react-onclickoutside';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import Suggestions from './Suggestions';
 import getCoordinates from './getCoordinates';
 
@@ -381,7 +381,7 @@ class TextInput extends Component {
 
 TextInput.propTypes = {
   trigger: PropTypes.string,
-  overflow: PropTypes.bool,
+  overflow: PropTypes.string,
   onChange: PropTypes.func,
   onUpdateCoords: PropTypes.func,
   onMention: PropTypes.func,
@@ -390,7 +390,7 @@ TextInput.propTypes = {
   onKeyPress: PropTypes.func,
   onKeyDown: PropTypes.func,
   onEnter: PropTypes.func,
-  value: PropTypes.func,
+  value: PropTypes.string,
 };
 
 TextInput.defaultProps = {
@@ -404,7 +404,7 @@ TextInput.defaultProps = {
   onKeyPress: () => {},
   onKeyDown: () => {},
   onEnter: () => {},
-  value: () => {},
+  value: '',
 };
 
 class TextArea extends Component {

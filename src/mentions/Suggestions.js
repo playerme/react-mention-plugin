@@ -155,7 +155,7 @@ Suggestions.propTypes = {
   isOpen: PropTypes.bool,
 };
 
-Suggestions.propTypes = {
+Suggestions.defaultProps = {
   coords: {},
   active: 0,
   options: [],
