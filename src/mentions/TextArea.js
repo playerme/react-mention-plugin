@@ -792,15 +792,16 @@ class TextArea extends Component {
           trigger={this.props.trigger}
         />
 
-        {this.state.isActivated && (
-          <Suggestions
-            active={this.state.activeSuggestion}
-            isOpen={this.state.isMentionOpen}
-            coords={this.state.coords}
-            options={this.props.suggestions}
-            onSelect={this.onMentionSelect}
-          />
-        )}
+        {this.state.isActivated &&
+          this.props.suggestions.length > 0 && (
+            <Suggestions
+              active={this.state.activeSuggestion}
+              isOpen={this.state.isMentionOpen}
+              coords={this.state.coords}
+              options={this.props.suggestions}
+              onSelect={this.onMentionSelect}
+            />
+          )}
       </div>
     );
   }
