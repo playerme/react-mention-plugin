@@ -1,7 +1,8 @@
 {
   "name": "react-mention-plugin",
   "version": "1.2.0",
-  "description": "A very simple, but awesome textarea component that allows you to \"@mention\" someone in a text message.",
+  "description":
+    "A very simple, but awesome textarea component that allows you to \"@mention\" someone in a text message.",
   "private": false,
   "main": "./lib/mentions/index.js",
   "license": "MIT",
@@ -56,8 +57,8 @@
   },
   "scripts": {
     "lint": "eslint src/mentions",
-    "start": "NODE_ENV=development node server.js",
-    "build": "NODE_ENV=production webpack --config ./webpack.config.prod.js",
+    "start": "node server.js",
+    "build": "webpack --config ./webpack.config.prod.js",
     "prepublish": "npm run build"
   }
 }
