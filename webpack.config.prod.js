@@ -1,12 +1,11 @@
 var path = require('path');
 
 module.exports = {
-  devtool: 'eval',
-  entry: ['webpack-dev-server/client?http://localhost:4000', './src/index.js'],
+  entry: './src/mentions/index.js',
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: '/build/',
+    path: path.join(__dirname, 'lib'),
+    filename: 'index.js',
+    libraryTarget: 'commonjs2',
   },
   module: {
     loaders: [
