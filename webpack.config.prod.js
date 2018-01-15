@@ -5,7 +5,14 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'lib'),
     filename: 'index.js',
-    libraryTarget: 'commonjs2',
+    libraryTarget: 'umd',
+  },
+  externals: {
+    react: 'react',
+    'react-dom': 'react-dom',
+    'popper.js': 'popper.js',
+    'prop-types': 'prop-types',
+    'react-onclickoutside': 'react-onclickoutside',
   },
   module: {
     loaders: [
