@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import './mentions/TextArea.css';
 
 import TextArea from './mentions/TextArea';
 
