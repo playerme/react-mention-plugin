@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import debounce from 'lodash/debounce';
 import onClickOutside from 'react-onclickoutside';
-import PropTypes, { string } from 'prop-types';
+import PropTypes from 'prop-types';
 import Suggestions from './Suggestions';
 import getCoordinates from './getCoordinates';
 
