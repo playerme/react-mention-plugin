@@ -66,11 +66,15 @@ class ProxyPre extends Component {
 ProxyPre.defaultProps = {
   value: '',
   isVisible: false,
+  isAbsolute: false,
+  maxHeight: 200,
 };
 
 ProxyPre.propTypes = {
   value: PropTypes.string,
   isVisible: PropTypes.bool,
+  isAbsolute: PropTypes.bool,
+  maxHeight: PropTypes.number,
 };
 
 class Highlighter extends Component {
@@ -154,6 +158,7 @@ class Backdrop extends Component {
 }
 
 Backdrop.propTypes = {
+  height: PropTypes.number,
   overflow: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -162,6 +167,7 @@ Backdrop.propTypes = {
 };
 
 Backdrop.defaultProps = {
+  height: 0,
   overflow: 'auto',
 };
 
@@ -373,7 +379,7 @@ class TextInput extends Component {
   }
 }
 
-TextInput.defaultProps = {
+TextInput.propTypes = {
   trigger: PropTypes.string,
   overflow: PropTypes.bool,
   onChange: PropTypes.func,
@@ -463,10 +469,8 @@ class TextArea extends Component {
 
   /**
    * Handles click outside event for closing suggestions component.
-   *
-   * @param {Object} evt
    */
-  handleClickOutside = evt => {
+  handleClickOutside = () => {
     this.onMentionClose();
   };
 
@@ -619,7 +623,7 @@ class TextArea extends Component {
    *
    * @returns {void}
    */
-  onMentionSelect = (event, user, index) => {
+  onMentionSelect = (event, user) => {
     this.onMentionClose();
     this.textarea.replaceText(user.value);
     this.onAddMention(user.value);
@@ -811,6 +815,7 @@ TextArea.propTypes = {
   onSubmit: PropTypes.func,
   onActivated: PropTypes.func,
   onSearch: PropTypes.func,
+  trigger: PropTypes.string,
 };
 
 TextArea.defaultProps = {
@@ -822,6 +827,7 @@ TextArea.defaultProps = {
   onChange: () => {},
   onActivated: () => {},
   onSearch: () => {},
+  trigger: '@',
 };
 
 export default onClickOutside(TextArea);

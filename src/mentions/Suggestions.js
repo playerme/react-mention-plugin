@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Popper from 'popper.js';
 
 /**
@@ -26,7 +27,19 @@ const MentionItems = ({ active, options, onClick }) => {
   );
 };
 
-export default class Suggestions extends Component {
+MentionItems.propTypes = {
+  active: PropTypes.number,
+  options: PropTypes.array,
+  onClick: PropTypes.func,
+};
+
+MentionItems.defaultProps = {
+  active: 0,
+  options: [],
+  onClick: () => {},
+};
+
+class Suggestions extends Component {
   /**
    * Popup Element to used by popper
    */
@@ -134,3 +147,19 @@ export default class Suggestions extends Component {
     ];
   }
 }
+
+Suggestions.propTypes = {
+  coords: PropTypes.object,
+  active: PropTypes.number,
+  options: PropTypes.array,
+  isOpen: PropTypes.bool,
+};
+
+Suggestions.propTypes = {
+  coords: {},
+  active: 0,
+  options: [],
+  isOpen: false,
+};
+
+export default Suggestions;
