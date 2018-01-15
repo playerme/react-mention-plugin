@@ -1,14 +1,15 @@
 {
   "name": "react-mention-plugin",
   "version": "1.0.2",
-  "description": "A very simple, but awesome textarea component that allows you to \"@mention\" someone in a text message.",
+  "description":
+    "A very simple, but awesome textarea component that allows you to \"@mention\" someone in a text message.",
   "private": false,
   "main": "./src/mentions/index.js",
   "license": "MIT",
   "author": {
     "name": "John Dave Decano",
     "email": "johndavedecano@gmail.com",
-    "url": "johndavedecano.me"
+    "url": "http://johndavedecano.me"
   },
   "repository": {
     "type": "git",
