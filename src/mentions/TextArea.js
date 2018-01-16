@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Suggestions from './Suggestions';
 import getCoordinates from './getCoordinates';
 
-import './TextArea.css';
+import './TextArea.scss';
 
 const KEYS = {
   TAB: 9,
@@ -139,7 +139,6 @@ class Backdrop extends Component {
 
   getCustomStyle() {
     return {
-      height: this.props.height,
       overflow: this.props.overflow,
     };
   }
@@ -158,7 +157,6 @@ class Backdrop extends Component {
 }
 
 Backdrop.propTypes = {
-  height: PropTypes.number,
   overflow: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -167,7 +165,6 @@ Backdrop.propTypes = {
 };
 
 Backdrop.defaultProps = {
-  height: 0,
   overflow: 'auto',
 };
 

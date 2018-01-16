@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import './mentions/TextArea.css';
+import './mentions/TextArea.scss';
 
 import TextArea from './mentions/TextArea';
 
