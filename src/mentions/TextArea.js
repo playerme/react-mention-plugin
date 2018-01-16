@@ -374,6 +374,7 @@ class TextInput extends Component {
         onKeyUp={this.onKeyUp}
         value={this.props.value}
         spellCheck={false}
+        placeholder={this.props.placeholder}
       />
     );
   }
@@ -391,6 +392,7 @@ TextInput.propTypes = {
   onKeyDown: PropTypes.func,
   onEnter: PropTypes.func,
   value: PropTypes.string,
+  placeholder: PropTypes.string,
 };
 
 TextInput.defaultProps = {
@@ -405,6 +407,7 @@ TextInput.defaultProps = {
   onKeyDown: () => {},
   onEnter: () => {},
   value: '',
+  placeholder: '',
 };
 
 class TextArea extends Component {
@@ -790,6 +793,7 @@ class TextArea extends Component {
           onUpdateCoords={this.onUpdateCoords()}
           value={this.state.value}
           trigger={this.props.trigger}
+          placeholder={this.props.placeholder}
         />
 
         {this.state.isActivated &&
@@ -817,6 +821,7 @@ TextArea.propTypes = {
   onActivated: PropTypes.func,
   onSearch: PropTypes.func,
   trigger: PropTypes.oneOf(['@', '#']),
+  placeholder: PropTypes.string,
 };
 
 TextArea.defaultProps = {
@@ -829,6 +834,7 @@ TextArea.defaultProps = {
   onActivated: () => {},
   onSearch: () => {},
   trigger: '@',
+  placeholder: 'Type your message here...',
 };
 
 export default onClickOutside(TextArea);
