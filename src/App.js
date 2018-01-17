@@ -7,7 +7,7 @@ import TextArea from './mentions/TextArea';
 class App extends Component {
   render() {
     return (
-      <div className="App">
+      <div id="App" className="App">
         <div id="lipsum">
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
@@ -90,7 +90,7 @@ class App extends Component {
                 id: 4,
                 avatar: 'https://randomuser.me/api/portraits/men/39.jpg',
                 value: 'Kumar_Patel',
-                label: 'Kumar Patel',
+                label: 'Kumar Patelsdgsagsadgsagasgasd',
               },
             ]}
           />
@@ -104,7 +104,7 @@ class App extends Component {
                 id: 1,
                 avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
                 value: 'Fred_Smith',
-                label: 'Fred Smith',
+                label: 'Fred Smithsdgasgsadgsdag',
               },
               {
                 id: 2,
@@ -147,7 +147,7 @@ class App extends Component {
                 id: 35,
                 avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
                 value: 'Joseph_Jones',
-                label: 'Joseph Jones',
+                label: 'Joseph Jonessdgsagsdgsadgasd',
               },
               {
                 id: 45,
@@ -165,6 +165,7 @@ class App extends Component {
           </p>
           <pre>autoResize=true autoResizeMaxHeight=200</pre>
           <TextArea
+            scrollParent={document.getElementById('App')}
             autoResizeMaxHeight={200}
             autoResize={true}
             suggestions={[

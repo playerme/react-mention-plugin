@@ -810,6 +810,7 @@ class TextArea extends Component {
               coords={this.state.coords}
               options={this.props.suggestions}
               onSelect={this.onMentionSelect}
+              scrollParent={this.props.scrollParent}
             />
           )}
       </div>
@@ -828,6 +829,7 @@ TextArea.propTypes = {
   onSearch: PropTypes.func,
   trigger: PropTypes.oneOf(['@', '#']),
   placeholder: PropTypes.string,
+  scrollParent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 TextArea.defaultProps = {
@@ -841,6 +843,7 @@ TextArea.defaultProps = {
   onSearch: () => {},
   trigger: '@',
   placeholder: 'Type your message here...',
+  scrollParent: 'scrollParent',
 };
 
 export default onClickOutside(TextArea);

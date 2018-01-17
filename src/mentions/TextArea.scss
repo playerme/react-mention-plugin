@@ -1,149 +1,147 @@
-.Mention-container,
-.Mention-backdrop,
-.Mention-textarea {
-  width: 100%;
+/* VARIABLES */
+$borderColor: #ccc;
+$textColorActive: #fff;
+$highlightColor: #bbdefb;
+$backgroundColor: #1976d2;
+$fontSize: .813em;
+
+.Mention-container, .Mention-backdrop, .Mention-textarea {
+  color: inherit;
   height: 100%;
   min-height: 60px;
-
-  color: inherit;
+  width: 100%;
 }
 
-.Mention-highlights,
-.Mention-textarea,
-.Mention-proxy {
-  margin: 0;
-  padding: 0;
-
+.Mention-highlights, .Mention-textarea, .Mention-proxy {
   font-family: inherit;
-  font-size: inherit;
+  font-size: $fontSize;
+  line-height: 1.5;
+  margin: 0;
+  padding: 5px;
 }
 
 .Mention-container {
-  position: relative;
-
+  border: solid 1px $borderColor;
   display: block;
-
-  border: solid 1px #ccc;
+  position: relative;
 
   -webkit-text-size-adjust: none;
 }
 
 .Mention-backdrop {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-
-  overflow: auto;
-
-  pointer-events: none;
-
-  border: none;
   background-color: transparent;
+  border: none;
+  left: 0;
+  overflow: auto;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  z-index: 9997;
 }
 
 .Mention-highlights {
+  color: transparent;
   white-space: pre-wrap;
   word-wrap: break-word;
-
-  color: transparent;
 }
 
 .Mention-proxy {
-  z-index: -1;
-
+  background: transparent;
+  border: none;
   box-sizing: border-box;
-
+  color: transparent;
   white-space: pre-wrap;
   word-wrap: break-word;
-
-  color: transparent;
-  border: none;
-  background: transparent;
+  z-index: 9996;
 }
 
 .Mention-textarea {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-
-  display: block;
-  overflow: auto;
-
-  box-sizing: border-box;
-  margin: 0;
-
-  resize: none;
-
+  background-color: transparent;
   border: none;
   border-radius: 0;
-  background-color: transparent;
+  box-sizing: border-box;
+  display: block;
+  left: 0;
+  margin: 0;
+  overflow: auto;
+  position: absolute;
+  resize: none;
+  top: 0;
+  z-index: 9998;
 }
 
 .Mention-mark {
+  background-color: $highlightColor;
+  border-radius: 2px;
   color: transparent;
-  background-color: #b1d5e5;
 }
 
 .Mention-reference {
-  position: absolute;
-  z-index: -1;
-
-  width: 0;
   height: 0;
+  position: absolute;
+  width: 0;
+  z-index: 9996;
 }
 
 .Mention-suggestions {
-  position: absolute;
-  z-index: 3;
-
-  visibility: hidden;
-
-  width: 200px;
-
-  transition: opacity 0.4s, visibility 0.4s;
-  transition-timing-function: ease;
-
+  background-color: $textColorActive;
+  box-shadow: 0 3px 10px 0 rgba(50, 50, 50, .61);
   opacity: 0;
-  border: solid 1px #ccc;
-  background-color: #fff;
-}
+  padding-bottom: 5px;
+  padding-top: 5px;
+  position: absolute;
+  transition: opacity .4s, visibility .4s;
+  transition-timing-function: ease;
+  visibility: hidden;
+  width: 200px;
+  z-index: 9999;
 
-.Mention-suggestions--block {
-  visibility: visible;
+  &[x-placement='bottom-start'] {
+    margin-top: 15px;
+  }
 
-  opacity: 1;
-}
+  &.Mention-suggestions--block {
+    opacity: 1;
+    visibility: visible;
+  }
 
-.Mention-suggestions[x-placement='bottom-start'] {
-  margin-top: 15px;
-}
+   > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 
-.Mention-suggestions > ul {
-  margin: 0;
-  padding: 0;
+    li > a {
+      color: inherit;
+      display: flex;
+      font-size: $fontSize;
+      padding: 6px;
+      text-decoration: none;
 
-  list-style-type: none;
-}
+      align-items: center;
 
-.Mention-suggestions > ul > li > a {
-  display: block;
+      span {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: calc(100% - 50px);
+      }
 
-  padding: 10px 10px 10px 10px;
+      img {
+        border-radius: 50%;
+        height: 30px;
+        margin-right: 10px;
+        width: 30px;
+      }
+    }
 
-  text-decoration: none;
+    li:last-child > a {
+      border-bottom: none;
+    }
 
-  color: inherit;
-  border-bottom: solid 1px #ccc;
-
-  font-size: 0.9em;
-}
-
-.Mention-suggestions > ul > li:last-child > a {
-  border-bottom: none;
-}
-
-.Mention-suggestions > ul > li > a.active {
-  background-color: #ccc;
+    li > a.active {
+      background-color: $backgroundColor;
+      color: $textColorActive;
+    }
+  }
 }

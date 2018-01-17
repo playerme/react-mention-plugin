@@ -18,8 +18,10 @@ const MentionItems = ({ active, options, onClick }) => {
             className={active === index ? 'active' : ''}
             href="/"
             onClick={onClick(item, index)}
+            title={item.label}
           >
-            {item.label}
+            {item.avatar && <img src={item.avatar} alt={item.label} />}
+            <span>{item.label}</span>
           </a>
         </li>
       ))}
@@ -95,6 +97,8 @@ class Suggestions extends Component {
         preventOverflow: {
           enabled: true,
           padding: 50,
+          escapeWithReference: true,
+          boundariesElement: this.props.scrollParent,
         },
       },
     });
@@ -153,6 +157,7 @@ Suggestions.propTypes = {
   active: PropTypes.number,
   options: PropTypes.array,
   isOpen: PropTypes.bool,
+  scrollParent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 Suggestions.defaultProps = {
@@ -160,6 +165,7 @@ Suggestions.defaultProps = {
   active: 0,
   options: [],
   isOpen: false,
+  scrollParent: 'scrollParent',
 };
 
 export default Suggestions;
