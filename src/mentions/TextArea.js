@@ -169,9 +169,18 @@ Backdrop.defaultProps = {
 };
 
 class TextInput extends Component {
+  componentDidMount() {
+    document.addEventListener('scroll', this.onDocumentScroll);
+  }
+
   componentWillUnmount() {
     this.textarea = null;
+    document.removeEventListener('scroll', this.onDocumentScroll);
   }
+
+  onDocumentScroll = () => {
+    this.onUpdateCoords();
+  };
 
   /**
    * @param {Object} event

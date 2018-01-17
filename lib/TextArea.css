@@ -1,8 +1,7 @@
 .Mention-container, .Mention-backdrop, .Mention-textarea {
   color: inherit;
   height: 100%;
-  min-height: 100px;
-  pointer-events: all;
+  min-height: 60px;
   width: 100%; }
 
 .Mention-highlights, .Mention-textarea, .Mention-proxy {

@@ -1,118 +1,119 @@
-.Mention-container, .Mention-backdrop, .Mention-textarea {
-  color: inherit;
+.Mention-container,
+.Mention-backdrop,
+.Mention-textarea {
+  width: 100%;
   height: 100%;
   min-height: 60px;
-  width: 100%;
+
+  color: inherit;
 }
 
-.Mention-highlights, .Mention-textarea, .Mention-proxy {
-  font-family: inherit;
-  font-size: inherit;
+.Mention-highlights,
+.Mention-textarea,
+.Mention-proxy {
   margin: 0;
   padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .Mention-container {
-  border: solid 1px #ccc;
-  display: block;
   position: relative;
+
+  display: block;
+
+  border: solid 1px #ccc;
 
   -webkit-text-size-adjust: none;
 }
 
 .Mention-backdrop {
-  background-color: transparent;
-  border: none;
-  left: 0;
-  overflow: auto;
-  pointer-events: none;
   position: absolute;
-  top: 0;
   z-index: 1;
+  top: 0;
+  left: 0;
 
-  -webkit-appearance: textarea;
-  -moz-appearance: textfield-multiline;
+  overflow: auto;
+
+  pointer-events: none;
+
+  border: none;
+  background-color: transparent;
 }
 
 .Mention-highlights {
-  color: transparent;
   white-space: pre-wrap;
   word-wrap: break-word;
+
+  color: transparent;
 }
 
 .Mention-proxy {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  background: transparent;
-  border: none;
+  z-index: -1;
+
   box-sizing: border-box;
-  color: transparent;
+
   white-space: pre-wrap;
   word-wrap: break-word;
-  z-index: -1;
+
+  color: transparent;
+  border: none;
+  background: transparent;
 }
 
 .Mention-textarea {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  background-color: transparent;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+
+  display: block;
+  overflow: auto;
+
+  box-sizing: border-box;
+  margin: 0;
+
+  resize: none;
+
   border: none;
   border-radius: 0;
-  box-sizing: border-box;
-  display: block;
-  left: 0;
-  margin: 0;
-  overflow: auto;
-  position: absolute;
-  resize: none;
-  top: 0;
-  z-index: 2;
-
-  -ms-box-sizing: border-box;
+  background-color: transparent;
 }
 
 .Mention-mark {
-  background-color: #b1d5e5;
   color: transparent;
+  background-color: #b1d5e5;
 }
 
 .Mention-reference {
-  height: 0;
   position: absolute;
-  width: 0;
   z-index: -1;
+
+  width: 0;
+  height: 0;
 }
 
 .Mention-suggestions {
-  background-color: #fff;
-  border: solid 1px #ccc;
   position: absolute;
-  visibility: hidden;
-  width: 200px;
   z-index: 3;
+
+  visibility: hidden;
+
+  width: 200px;
+
+  transition: opacity 0.4s, visibility 0.4s;
+  transition-timing-function: ease;
+
+  opacity: 0;
+  border: solid 1px #ccc;
+  background-color: #fff;
 }
 
 .Mention-suggestions--block {
-  -webkit-animation: fadeIn .4s;
-  animation: fadeIn .4s;
   visibility: visible;
-}
 
-@-webkit-keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  opacity: 1;
 }
 
 .Mention-suggestions[x-placement='bottom-start'] {
@@ -120,18 +121,23 @@
 }
 
 .Mention-suggestions > ul {
-  list-style-type: none;
   margin: 0;
   padding: 0;
+
+  list-style-type: none;
 }
 
 .Mention-suggestions > ul > li > a {
-  border-bottom: solid 1px #ccc;
-  color: inherit;
   display: block;
-  font-size: .9em;
+
   padding: 10px 10px 10px 10px;
+
   text-decoration: none;
+
+  color: inherit;
+  border-bottom: solid 1px #ccc;
+
+  font-size: 0.9em;
 }
 
 .Mention-suggestions > ul > li:last-child > a {
