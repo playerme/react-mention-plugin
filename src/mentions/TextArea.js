@@ -516,6 +516,11 @@ class TextArea extends Component {
   };
 
   /**
+   * Well only update the coordinates on keyup
+   */
+  onKeyUp = () => this.updateCoordinates();
+
+  /**
    * @param {Object} event
    */
   onKeyDown = event => {
@@ -601,13 +606,20 @@ class TextArea extends Component {
   };
 
   /**
+   * Update coords state
+   */
+  updateCoordinates() {
+    this.setState({
+      coords: this.textarea.getCoordinates(),
+    });
+  }
+
+  /**
    * @returns {void}
    */
   onMentionOpen = () => {
-    const coords = this.textarea.getCoordinates();
     this.setState(
       {
-        coords,
         activeSuggestion: 0,
         isMentionOpen: true,
       },
@@ -796,6 +808,7 @@ class TextArea extends Component {
           onChange={this.onChange}
           onEnter={this.onEnter}
           onKeyDown={this.onKeyDown}
+          onKeyUp={this.onKeyUp}
           onScroll={this.onScroll}
           value={this.state.value}
           trigger={this.props.trigger}

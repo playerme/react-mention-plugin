@@ -1,3 +1,4 @@
+/* VARIABLES */
 .Mention-container, .Mention-backdrop, .Mention-textarea {
   color: inherit;
   height: 100%;
@@ -6,9 +7,10 @@
 
 .Mention-highlights, .Mention-textarea, .Mention-proxy {
   font-family: inherit;
-  font-size: inherit;
+  font-size: 0.813em;
+  line-height: 1.5;
   margin: 0;
-  padding: 0; }
+  padding: 5px; }
 
 .Mention-container {
   border: solid 1px #ccc;
@@ -24,9 +26,7 @@
   pointer-events: none;
   position: absolute;
   top: 0;
-  z-index: 1;
-  -webkit-appearance: textarea;
-  -moz-appearance: textfield-multiline; }
+  z-index: 9997; }
 
 .Mention-highlights {
   color: transparent;
@@ -34,19 +34,15 @@
   word-wrap: break-word; }
 
 .Mention-proxy {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   background: transparent;
   border: none;
   box-sizing: border-box;
   color: transparent;
   white-space: pre-wrap;
   word-wrap: break-word;
-  z-index: -1; }
+  z-index: 9996; }
 
 .Mention-textarea {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   background-color: transparent;
   border: none;
   border-radius: 0;
@@ -58,62 +54,60 @@
   position: absolute;
   resize: none;
   top: 0;
-  z-index: 2;
-  -ms-box-sizing: border-box; }
+  z-index: 9998; }
 
 .Mention-mark {
-  background-color: #b1d5e5;
+  background-color: #bbdefb;
+  border-radius: 2px;
   color: transparent; }
 
 .Mention-reference {
   height: 0;
   position: absolute;
   width: 0;
-  z-index: -1; }
+  z-index: 9996; }
 
 .Mention-suggestions {
   background-color: #fff;
-  border: solid 1px #ccc;
+  box-shadow: 0 3px 10px 0 rgba(50, 50, 50, 0.61);
+  opacity: 0;
+  padding-bottom: 5px;
+  padding-top: 5px;
   position: absolute;
+  transition: opacity .4s, visibility .4s;
+  transition-timing-function: ease;
   visibility: hidden;
   width: 200px;
-  z-index: 3; }
-
-.Mention-suggestions--block {
-  -webkit-animation: fadeIn .4s;
-  animation: fadeIn .4s;
-  visibility: visible; }
-
-@-webkit-keyframes fadeIn {
-  from {
-    opacity: 0; }
-  to {
-    opacity: 1; } }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0; }
-  to {
-    opacity: 1; } }
-
-.Mention-suggestions[x-placement='bottom-start'] {
-  margin-top: 15px; }
-
-.Mention-suggestions > ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0; }
-
-.Mention-suggestions > ul > li > a {
-  border-bottom: solid 1px #ccc;
-  color: inherit;
-  display: block;
-  font-size: .9em;
-  padding: 10px 10px 10px 10px;
-  text-decoration: none; }
-
-.Mention-suggestions > ul > li:last-child > a {
-  border-bottom: none; }
-
-.Mention-suggestions > ul > li > a.active {
-  background-color: #ccc; }
+  z-index: 9999; }
+  .Mention-suggestions[x-placement='bottom-start'] {
+    margin-top: 15px; }
+  .Mention-suggestions.Mention-suggestions--block {
+    opacity: 1;
+    visibility: visible; }
+  .Mention-suggestions > ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0; }
+    .Mention-suggestions > ul li > a {
+      color: inherit;
+      display: flex;
+      font-size: 0.813em;
+      padding: 6px;
+      text-decoration: none;
+      align-items: center; }
+      .Mention-suggestions > ul li > a span {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: calc(100% - 50px); }
+      .Mention-suggestions > ul li > a img {
+        border-radius: 50%;
+        height: 30px;
+        margin-right: 10px;
+        width: 30px; }
+    .Mention-suggestions > ul li:last-child > a {
+      border-bottom: none; }
+    .Mention-suggestions > ul li > a.active {
+      background-color: #1976d2;
+      color: #fff; }
