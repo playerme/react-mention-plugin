@@ -169,39 +169,37 @@ Backdrop.defaultProps = {
 };
 
 class TextInput extends Component {
-  componentDidMount() {
-    document.addEventListener('scroll', this.onDocumentScroll);
-  }
-
-  componentWillUnmount() {
-    this.textarea = null;
-    document.removeEventListener('scroll', this.onDocumentScroll);
-  }
-
-  onDocumentScroll = () => {
-    this.onUpdateCoords();
+  state = {
+    lastKey: undefined,
+    isHoldingSameKey: false, // Used to throttle back space.
   };
 
   /**
    * @param {Object} event
    */
   onChange = event => {
-    this.onUpdateCoords();
-
     this.props.onChange(event.target.value);
+    this.attemptMention(event.target);
+  };
 
-    const mentioned = this.getLastWord(event.target);
+  attemptMention(target) {
+    const mentioned = this.getLastWord(target);
 
     const isMatched = new RegExp(`(${this.props.trigger}\\w+)`, 'g').test(
       mentioned
     );
 
-    if (mentioned && mentioned.length > 3 && isMatched) {
+    if (
+      mentioned &&
+      mentioned.length > 1 &&
+      isMatched &&
+      this.state.isHoldingSameKey === false
+    ) {
       this.props.onMention(mentioned);
     } else {
       this.props.onMention(false);
     }
-  };
+  }
 
   /**
    * @param {Object} event
@@ -291,11 +289,9 @@ class TextInput extends Component {
   }
 
   /**
-   * Updates mention suggestions coordinates.
-   *
-   * @returns {void}
+   * Get text area care x and y position.
    */
-  onUpdateCoords() {
+  getCoordinates = () => {
     const { left, top } = getCoordinates(
       this.textarea,
       this.textarea.selectionEnd
@@ -307,11 +303,11 @@ class TextInput extends Component {
       nextTop = top - (this.textarea.scrollHeight - this.textarea.clientHeight);
     }
 
-    this.props.onUpdateCoords({
+    return {
       left,
       top: nextTop,
-    });
-  }
+    };
+  };
 
   /**
    * @param {Object} event
@@ -328,6 +324,11 @@ class TextInput extends Component {
    * @returns {void}
    */
   onKeyDown = event => {
+    this.setState({
+      lastKey: event.keyCode,
+      isHoldingSameKey: this.state.lastKey === event.keyCode,
+    });
+
     this.props.onKeyDown(event);
   };
 
@@ -337,6 +338,19 @@ class TextInput extends Component {
    * @returns {void}
    */
   onKeyUp = event => {
+    const isHoldingSameKey = this.state.isHoldingSameKey;
+    event.persist();
+    this.setState(
+      {
+        lastKey: undefined,
+        isHoldingSameKey: false,
+      },
+      () => {
+        if (isHoldingSameKey) {
+          this.attemptMention(event.target);
+        }
+      }
+    );
     this.props.onKeyUp(event);
   };
 
@@ -390,7 +404,6 @@ TextInput.propTypes = {
   trigger: PropTypes.string,
   overflow: PropTypes.string,
   onChange: PropTypes.func,
-  onUpdateCoords: PropTypes.func,
   onMention: PropTypes.func,
   onScroll: PropTypes.func,
   onKeyUp: PropTypes.func,
@@ -405,7 +418,6 @@ TextInput.defaultProps = {
   trigger: '@',
   overflow: 'auto',
   onChange: () => {},
-  onUpdateCoords: () => {},
   onMention: () => {},
   onScroll: () => {},
   onKeyUp: () => {},
@@ -438,6 +450,7 @@ class TextArea extends Component {
     this.component = null;
     this.textarea = null;
     this.backdrop = null;
+    document.removeEventListener('scroll', this.onDocumentScroll);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -574,20 +587,6 @@ class TextArea extends Component {
   };
 
   /**
-   * Updates the coordinates in the state to be used
-   * for positioning our mention suggestion.
-   *
-   * @returns {Function}
-   */
-  onUpdateCoords = () => {
-    return debounce(coords => {
-      this.setState({
-        coords,
-      });
-    }, 300);
-  };
-
-  /**
    * @param {String} mention
    *
    * @returns {void}
@@ -605,8 +604,10 @@ class TextArea extends Component {
    * @returns {void}
    */
   onMentionOpen = () => {
+    const coords = this.textarea.getCoordinates();
     this.setState(
       {
+        coords,
         activeSuggestion: 0,
         isMentionOpen: true,
       },
@@ -796,7 +797,6 @@ class TextArea extends Component {
           onEnter={this.onEnter}
           onKeyDown={this.onKeyDown}
           onScroll={this.onScroll}
-          onUpdateCoords={this.onUpdateCoords()}
           value={this.state.value}
           trigger={this.props.trigger}
           placeholder={this.props.placeholder}

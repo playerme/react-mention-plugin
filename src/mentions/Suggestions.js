@@ -94,10 +94,11 @@ class Suggestions extends Component {
       removeOnDestroy: true,
       modifiers: {
         offset: { offset: '0,5' },
+        keepTogether: { enabled: true },
         preventOverflow: {
           enabled: true,
-          padding: 50,
-          escapeWithReference: true,
+          padding: 10,
+          escapeWithReference: false,
           boundariesElement: this.props.scrollParent,
         },
       },
